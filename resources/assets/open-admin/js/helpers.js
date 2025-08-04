@@ -138,73 +138,20 @@
 
 
 function bindSubmitButtonWithLoading() {
-	$('button.submit, button[type="submit"]').off('click.submit').on('click.submit', function (event) {
-		const button = event.target;
-
-		if (!(button && (button.classList.contains('submit') || button.type === 'submit'))) {
-			return;
-		}
-
-		const form = $(button).closest('form');
-
-		if (!form.length) return;
-
-		const actionUrl = form.attr('action') || window.location.href;
-
-		if (/\/template\/export/.test(actionUrl)) {
-			form.off('submit');
-			form[0].submit();
-			return;
-		}
-
-
-		const originalText = button.innerHTML;
-		const originalDisabledState = button.disabled;
-		button.innerHTML = 'Loading...';
-		button.disabled = true;
-
-		if (form.data('submitted')) {
-			button.innerHTML = originalText;
-			button.disabled = originalDisabledState;
-			return;
-		}
-
-		form.data('submitted', true);
-
-		setTimeout(() => {
-			button.innerHTML = originalText;
-			button.disabled = originalDisabledState;
-			form.data('submitted', false);
-		}, 3000);
-
-		event.preventDefault();
-
-		const method = (form.attr('method') || 'GET').toUpperCase();
-
-		if (method === 'GET') {
-			const formData = form.serialize();
-			const fullUrl = actionUrl.split('?')[0] + '?' + formData;
-
-			$.pjax({
-				url: fullUrl,
-				container: '#pjax-container',
-				type: 'GET',
-				timeout: 10000
-			});
-		} else {
-			const formData = new FormData(form[0]);
-
-			$.pjax({
-				url: actionUrl,
-				data: formData,
-				container: '#pjax-container',
-				type: method,
-				timeout: 10000,
-				processData: false,
-				contentType: false
-			});
-		}
-	});
+    $('form').each(function () {
+        var form = $(this);
+        form.find('button.submit, button[type="submit"], #search-btn').off('click.submit').on('click.submit', function (e) {
+            if (form[0].checkValidity()) {
+                var btn = $(this);
+                btn.data('originalText', btn.html());
+                btn.html(btn.data('loading-text') || 'Loading...');
+                btn.prop('disabled', true);
+            } else {
+                e.preventDefault();
+                form[0].reportValidity();
+            }
+        });
+    });
 }
 
 function clickEvent() {

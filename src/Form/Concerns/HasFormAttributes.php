@@ -232,7 +232,7 @@ trait HasFormAttributes
     public function enableValidate()
     {
         $this->validateClientSide = true;
-        $this->attribute('novalidate', true);
+        // $this->attribute('novalidate', true);
         $this->addFormClass('needs-validation');
 
         return $this;
