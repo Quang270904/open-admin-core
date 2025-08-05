@@ -138,20 +138,59 @@
 
 
 function bindSubmitButtonWithLoading() {
-    $('form').each(function () {
-        var form = $(this);
-        form.find('button.submit, button[type="submit"], #search-btn').off('click.submit').on('click.submit', function (e) {
-            if (form[0].checkValidity()) {
-                var btn = $(this);
-                btn.data('originalText', btn.html());
-                btn.html(btn.data('loading-text') || 'Loading...');
-                btn.prop('disabled', true);
-            } else {
-                e.preventDefault();
-                form[0].reportValidity();
-            }
-        });
-    });
+	$('form').each(function () {
+		var form = $(this);
+		form.find('button.submit, button[type="submit"], #search-btn').off('click.submit').on('click.submit', function (e) {
+			if (form[0].checkValidity()) {
+				var btn = $(this);
+				btn.data('originalText', btn.html());
+				btn.html(btn.data('loading-text') || 'Loading...');
+				btn.prop('disabled', true);
+				setTimeout(() => {
+					btn.html(btn.data('originalText'));
+					btn.prop('disabled', false);
+					btn.removeData('originalText');
+				}, 1000);
+
+				const actionUrl = form.attr('action') || window.location.href;
+				if (/\/template\/export/.test(actionUrl)) {
+					form.off('submit');
+					form[0].submit();
+					return;
+				}
+
+				e.preventDefault();
+
+				const method = (form.attr('method') || 'GET').toUpperCase();
+
+				if (method === 'GET') {
+					const formData = form.serialize();
+					const fullUrl = actionUrl.split('?')[0] + '?' + formData;
+
+					$.pjax({
+						url: fullUrl,
+						container: '#pjax-container',
+						type: 'GET',
+						timeout: 10000
+					});
+				} else {
+					const formData = new FormData(form[0]);
+					$.pjax({
+						url: actionUrl,
+						data: formData,
+						container: '#pjax-container',
+						type: method,
+						timeout: 10000,
+						processData: false,
+						contentType: false
+					});
+				}
+			} else {
+				e.preventDefault();
+				form[0].reportValidity();
+			}
+		});
+	});
 }
 
 function clickEvent() {
