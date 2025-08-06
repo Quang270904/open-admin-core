@@ -37,7 +37,7 @@
                 <div id="app">
                     @yield('content')
                 </div>
-                {!! Admin::html() !!}
+                {{-- {!! Admin::html() !!} --}}
                 {!! Admin::script() !!}
                 <!--end-pjax-container-->
             </div>

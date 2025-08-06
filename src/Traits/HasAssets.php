@@ -236,7 +236,7 @@ trait HasAssets
             $js = array_merge(static::baseJs(), static::$js);
         }
 
-        $js = array_merge($js, static::$minifyIgnoresJs); // add minified ignored files
+        $js = array_merge($js, static::$jslast); // add minified ignored files
         $js = array_filter(array_unique($js));
 
         return view('admin::partials.js', compact('js'));

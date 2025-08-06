@@ -388,7 +388,6 @@ admin.pages = {
         admin.grid.inline_edit.init();
         admin.form.init();
         this.initBootstrap();
-        this.initScrollSync(); 
     },
 
     setTitle: function () {
@@ -412,31 +411,6 @@ admin.pages = {
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
-    },
-    initScrollSync: function () {
-        function initializeScrollSync() {
-            const topScroll = document.querySelector('.wrapper-scroll-top');
-            
-            const bottomScroll = document.querySelector('.wrapper-scroll-bottom');
-            
-
-            topScroll.removeEventListener('scroll', syncScrollTopToBottom);
-            bottomScroll.removeEventListener('scroll', syncScrollBottomToTop);
-
-            topScroll.addEventListener('scroll', syncScrollTopToBottom);
-            bottomScroll.addEventListener('scroll', syncScrollBottomToTop);
-
-            function syncScrollTopToBottom() {
-                bottomScroll.scrollLeft = topScroll.scrollLeft;                
-            }
-
-            function syncScrollBottomToTop() {
-                topScroll.scrollLeft = bottomScroll.scrollLeft;
-                
-            }
-        }
-
-        initializeScrollSync();
     },
     
 };
@@ -494,7 +468,6 @@ $(document).on('submit', 'form[pjax-container]', function (event) {
 });
 
 $(document).on('pjax:end', function () {
-    admin.pages.initScrollSync(); // Add this line to reinitialize scroll sync after PJAX
     bindSubmitButtonWithLoading();
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
         new bootstrap.Tooltip(el, {
