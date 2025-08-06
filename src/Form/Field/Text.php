@@ -15,8 +15,7 @@ class Text extends Field
     /**
      * @var string|null
      */
-    protected $icon = 'icon-pencil-alt';
-
+    protected $icon = 'fa-pencil';
     /**
      * @var bool
      */
