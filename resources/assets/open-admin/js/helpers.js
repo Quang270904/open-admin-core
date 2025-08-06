@@ -142,22 +142,16 @@ function bindSubmitButtonWithLoading() {
 		var form = $(this);
 		form.find('button.submit, button[type="submit"], #search-btn').off('click.submit').on('click.submit', function (e) {
 			if (form[0].checkValidity()) {
-				var btn = $(this);
-				btn.data('originalText', btn.html());
-				btn.html(btn.data('loading-text') || 'Loading...');
-				btn.prop('disabled', true);
-				setTimeout(() => {
-					btn.html(btn.data('originalText'));
-					btn.prop('disabled', false);
-					btn.removeData('originalText');
-				}, 1000);
-
 				const actionUrl = form.attr('action') || window.location.href;
 				if (/\/template\/export/.test(actionUrl)) {
 					form.off('submit');
 					form[0].submit();
 					return;
 				}
+				var btn = $(this);
+				btn.data('originalText', btn.html());
+				btn.html(btn.data('loading-text') || 'Loading...');
+				btn.prop('disabled', true);
 
 				e.preventDefault();
 
