@@ -166,6 +166,9 @@ function bindSubmitButtonWithLoading() {
 						container: '#pjax-container',
 						type: 'GET',
 						timeout: 10000
+					}).done(function () {
+						btn.html(btn.data('originalText'));
+						btn.prop('disabled', false);
 					});
 				} else {
 					const formData = new FormData(form[0]);
