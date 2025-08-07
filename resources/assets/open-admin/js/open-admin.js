@@ -471,6 +471,7 @@ $(document).on('submit', 'form[pjax-container]', function (event) {
 
 $(document).on('pjax:end', function () {
     bindSubmitButtonWithLoading();
+    changeText();
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
         new bootstrap.Tooltip(el, {
             title: el.getAttribute('data-bs-original-title') || el.getAttribute('title')
