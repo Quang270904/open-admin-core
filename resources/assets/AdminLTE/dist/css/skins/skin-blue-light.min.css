@@ -232,7 +232,6 @@
 .custom-menu > ul > li.active,
 .custom-menu > ul > li.active > a {
     background: #f4f4f5 !important;
-    border-left: none !important;
     color: black !important;
 }
 .custom-menu .submenu > li:hover,

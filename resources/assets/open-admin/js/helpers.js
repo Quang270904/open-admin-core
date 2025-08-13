@@ -287,8 +287,6 @@ function handleSidebar() {
 	});
 
 	document.querySelectorAll('.menu-item > a:not(.has-subs)').forEach(link => {
-		console.log(link);
-		
 		link.addEventListener('click', () => {
 			document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
 			link.closest('.menu-item')?.classList.add('active');
