@@ -265,7 +265,7 @@ main#main footer.fixed-bottom {
         background: transparent;
 
         &.active {
-            border-left: 3px solid var(--bs-primary);
+            // border-left: 3px solid var(--bs-primary);
             background-color: var(--menu-active-bg);
         }
     }

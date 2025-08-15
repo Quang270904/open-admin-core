@@ -321,11 +321,12 @@ body .choices {
     $state: "valid";
     $icon: none;
     $color: $input-border-color;
+    $color-for-contrast: if(type-of($color) == "color", $color, #dee2e6);
     @include form-validation-state(
         $state,
         $color,
         $icon,
-        $tooltip-color: color-contrast($color),
+        $tooltip-color: color-contrast($color-for-contrast),
         $tooltip-bg-color: rgba($color, $form-feedback-tooltip-opacity),
         $focus-box-shadow: 0 0 $input-btn-focus-blur $input-focus-width
             rgba($color, $input-btn-focus-color-opacity)

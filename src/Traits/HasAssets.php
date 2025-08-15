@@ -71,16 +71,10 @@ trait HasAssets
      * @var array<string>
      */
     public static $baseCss = [
-        // 'vendor/open-admin/AdminLTE/bootstrap/css/bootstrap.min.css',
         'vendor/open-admin/font-awesome/css/all.min.css',
         'vendor/open-admin/font-awesome/css/v4-shims.min.css',
-        // 'vendor/open-admin/open-admin/open-admin.css',
-        // 'vendor/open-admin/nprogress/nprogress.css',
         'vendor/open-admin/sweetalert2/dist/sweetalert2.css',
-        // 'vendor/open-admin/nestable/nestable.css',
         'vendor/open-admin/bootstrap5-editable/css/bootstrap-editable.css',
-        // 'vendor/open-admin/google-fonts/fonts.css',
-        // 'vendor/open-admin/AdminLTE/dist/css/AdminLTE.min.css',
         'vendor/open-admin/nprogress/nprogress.css',
         'vendor/open-admin/sweetalert2/sweetalert2.min.css',
         'vendor/open-admin/toastify-js/toastify.css',
@@ -94,13 +88,10 @@ trait HasAssets
         'vendor/open-admin/AdminLTE4/css/adminlte.min.css',
         'vendor/open-admin/open-admin/css/custom.css',
         'vendor/open-admin/toastr/build/toastr.min.css',
-        // "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css",
         "/vendor/open-admin/bootstrap-duallistbox/dist/bootstrap-duallistbox.min.css?v=4.0.2",
 
-        // "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
-        // "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
-        "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css",
-        "https://cdn.jsdelivr.net/npm/bootstrap-fileinput/css/fileinput.min.css",
+        'vendor/open-admin/open-admin/css/bootstrap-icons.css',
+        'vendor/open-admin/bootstrap-fileinput/css/fileinput.min.css',
     ];
 
     /**
@@ -108,30 +99,25 @@ trait HasAssets
      */
     public static $baseJs = [
         
-        // 'vendor/open-admin/AdminLTE/bootstrap/js/bootstrap.min.js',
-        "https://code.jquery.com/jquery-3.7.1.min.js",
-        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js",
-        "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js",
-        "https://cdn.jsdelivr.net/npm/bootstrap-fileinput/js/fileinput.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.4/js/locales/ja.min.js",
+        "vendor/open-admin/open-admin/js/bootstrap.bundle.min.js",
+        "vendor/open-admin/open-admin/js/popper.min.js",
+        'vendor/open-admin/bootstrap-fileinput/js/fileinput.min.js',
+        "vendor/open-admin/bootstrap-fileinput/js/ja.min.js",
         'vendor/open-admin/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js',
         'vendor/open-admin/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js?v=4.0.2',
         
-        // 'vendor/open-admin/AdminLTE/dist/js/app.min.js',
+        'vendor/open-admin/AdminLTE/dist/js/app.min.js',
         'vendor/open-admin/AdminLTE4/js/adminlte.min.js',
         'vendor/open-admin/jquery-pjax/jquery.pjax.js',
         'vendor/open-admin/nprogress/nprogress.js',
         'vendor/open-admin/nestable/jquery.nestable.js',
         'vendor/open-admin/toastr/build/toastr.min.js',
         'vendor/open-admin/bootstrap5-editable/js/bootstrap-editable.min.js',
-        'vendor/exment/js/editable-init.js',
+        'vendor/open-admin/open-admin/js/editable-init.js',
         'vendor/open-admin/sweetalert2/dist/sweetalert2.min.js',
-        // 'vendor/open-admin/open-admin/open-admin.js',
 
-        // 'vendor/open-admin/bootstrap5/bootstrap.bundle.min.js',
         'vendor/open-admin/nprogress/nprogress.js',
         'vendor/open-admin/axios/axios.min.js',
-        // 'vendor/open-admin/sweetalert2/sweetalert2.min.js',
         'vendor/open-admin/toastify-js/toastify.js',
         'vendor/open-admin/flatpickr/flatpickr.min.js',
         'vendor/open-admin/choicesjs/scripts/choices.min.js',
@@ -148,14 +134,6 @@ trait HasAssets
         'vendor/open-admin/open-admin/js/open-admin-resource.js',
         'vendor/open-admin/open-admin/js/open-admin-tree.js',
         'vendor/open-admin/open-admin/js/open-admin-selectable.js',
-        // 'vendor/exment/js/customscript.js',
-        // 'vendor/open-admin/jquery-pjax/jquery.pjax.js',
-        // 'vendor/open-admin/toastr/build/toastr.min.js',
-        // 'vendor/open-admin/bootstrap3-editable/js/bootstrap-editable.min.js',
-        // 'vendor/open-admin/open-admin/laravel-admin.js',
-        // 'vendor/open-admin/AdminLTE/bootstrap/js/bootstrap.min.js',
-
-
     ];
 
     /**
