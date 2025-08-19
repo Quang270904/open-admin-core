@@ -207,91 +207,84 @@ function clickEvent() {
 }
 
 function handleSidebar() {
-	const path = location.pathname;
+    const path = location.pathname;
 
-	document.querySelectorAll('.menu-item[data-uri]').forEach(item => {
-		const uri = item.dataset.uri;
-		if (uri && (path === uri || path.startsWith(uri + '/'))) {
-			item.classList.add('active');
-			item.querySelector('.submenu')?.style.setProperty('display', 'block');
-			item.querySelector('.has-subs')?.classList.add('active');
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+        item.querySelector('.submenu')?.style.setProperty('display', 'none');
+        item.querySelector('.has-subs')?.classList.remove('active');
+    });
 
-			let parent = item.parentElement;
-			while (parent && parent.closest('.menu-item')) {
-				const menuItem = parent.closest('.menu-item');
-				menuItem.classList.add('active');
-				menuItem.querySelector('.submenu')?.style.setProperty('display', 'block');
-				menuItem.querySelector('.has-subs')?.classList.add('active');
-				parent = menuItem.parentElement;
-			}
-		}
-	});
+    document.querySelectorAll('.menu-item[data-uri]').forEach(item => {
+        const uri = item.dataset.uri;
+        if (uri && (path === uri || path.startsWith(uri + '/'))) {
+            item.classList.add('active');
+            item.querySelector('.submenu')?.style.setProperty('display', 'block');
+            item.querySelector('.has-subs')?.classList.add('active');
+            let parent = item.parentElement;
+            while (parent && parent.closest('.menu-item')) {
+                const menuItem = parent.closest('.menu-item');
+                menuItem.classList.add('active');
+                menuItem.querySelector('.submenu')?.style.setProperty('display', 'block');
+                menuItem.querySelector('.has-subs')?.classList.add('active');
+                parent = menuItem.parentElement;
+            }
+        }
+    });
 
-	document.querySelectorAll('.submenu').forEach(submenu => {
-		submenu.addEventListener('click', e => {
-			if (!e.target.closest('a')) e.stopPropagation();
-		});
-	});
+    document.querySelectorAll('.has-subs').forEach(toggleLink => {
+        const newToggle = toggleLink.cloneNode(true);
+        toggleLink.parentNode.replaceChild(newToggle, toggleLink);
+    });
 
-	document.querySelectorAll('.has-subs').forEach(function(toggleLink) {
-		toggleLink.addEventListener('click', function(e) {
-			if (!e.isTrusted || e.detail > 1) {
-				e.preventDefault();
-				return;
-			}
+    document.querySelectorAll('.has-subs').forEach(toggleLink => {
+        toggleLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const targetId = this.getAttribute('data-target');
+            const submenu = document.querySelector(targetId);
+            const menuItem = this.closest('.menu-item');
+            if (!submenu) return;
 
-			e.preventDefault();
-			e.stopPropagation();
+            document.querySelectorAll('.has-subs').forEach(link => {
+                if (link !== this) {
+                    link.classList.remove('active');
+                    link.closest('.menu-item')?.classList.remove('active');
+                    const otherSubmenu = document.querySelector(link.getAttribute('data-target'));
+                    if (otherSubmenu && otherSubmenu !== submenu) slideUp(otherSubmenu, 500);
+                }
+            });
 
-			const targetId = this.getAttribute('data-target');
-			const submenu = document.querySelector(targetId);
-			const menuItem = this.closest('.menu-item');
+            const isOpening = submenu.style.display === 'none' || getComputedStyle(submenu).display === 'none';
+            if (isOpening) {
+                slideDown(submenu, 500);
+                this.classList.add('active');
+                menuItem.classList.add('active');
+            } else {
+                slideUp(submenu, 500);
+                this.classList.remove('active');
+                menuItem.classList.remove('active');
+            }
+        });
+    });
 
-			if (!submenu) return;
+    document.querySelectorAll('.menu-item > a:not(.has-subs)').forEach(link => {
+        const newLink = link.cloneNode(true);
+        link.parentNode.replaceChild(newLink, link);
+    });
 
-			const currentDisplay = submenu.style.display || getComputedStyle(submenu).display;
-			const isOpening = currentDisplay === 'none' || currentDisplay === '';
+    document.querySelectorAll('.menu-item > a:not(.has-subs)').forEach(link => {
+        link.addEventListener('click', () => {
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            link.closest('.menu-item')?.classList.add('active');
+        });
+    });
 
-			document.querySelectorAll('.submenu').forEach(function (otherSubmenu) {
-				if (otherSubmenu !== submenu && otherSubmenu.style.display === 'block') {					
-					slideUp(otherSubmenu, 500);
-				}
-			});
-
-			document.querySelectorAll('.has-subs').forEach(function (link) {
-				if (link !== toggleLink) {
-					link.classList.remove('active');
-				}
-			});
-
-			document.querySelectorAll('.menu-item > a').forEach(function (link) {
-				link.addEventListener('click', function (e) {
-
-					const li = this.closest('.menu-item');
-					if (li) {
-						li.classList.add('active');
-					}
-				});
-			});
-
-			if (isOpening) {
-				slideDown(submenu, 500);
-				toggleLink.classList.add('active');
-				menuItem.classList.add('active');
-			} else {
-				slideUp(submenu, 500);
-				toggleLink.classList.remove('active');
-				menuItem.classList.remove('active');
-			}
-		});
-	});
-
-	document.querySelectorAll('.menu-item > a:not(.has-subs)').forEach(link => {
-		link.addEventListener('click', () => {
-			document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-			link.closest('.menu-item')?.classList.add('active');
-		});
-	});
+    document.querySelectorAll('.submenu').forEach(submenu => {
+        submenu.addEventListener('click', e => {
+            if (!e.target.closest('a')) e.stopPropagation();
+        });
+    });
 }
 
 function changeText() {
