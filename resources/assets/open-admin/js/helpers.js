@@ -209,12 +209,24 @@ function clickEvent() {
 function handleSidebar() {
     const path = location.pathname;
 
+	//Save the state of currently opened submenus
+    const openMenus = [];
+	
+    document.querySelectorAll('.submenu').forEach(submenu => {
+        if (getComputedStyle(submenu).display !== 'none') {
+            const parentItem = submenu.closest('.menu-item');
+            if (parentItem) openMenus.push(parentItem.dataset.uri || submenu.id);
+        }
+    });
+
+	//Reset all menu items (remove active classes and hide submenus)
     document.querySelectorAll('.menu-item').forEach(item => {
         item.classList.remove('active');
         item.querySelector('.submenu')?.style.setProperty('display', 'none');
         item.querySelector('.has-subs')?.classList.remove('active');
     });
 
+	//Activate menu items based on current URL path
     document.querySelectorAll('.menu-item[data-uri]').forEach(item => {
         const uri = item.dataset.uri;
         if (uri && (path === uri || path.startsWith(uri + '/'))) {
@@ -231,12 +243,27 @@ function handleSidebar() {
             }
         }
     });
+	
+	//Restore previously opened submenus
+    openMenus.forEach(id => {
+        let item = document.querySelector(`.menu-item[data-uri="${id}"]`) 
+                 || document.querySelector(`#${id}`)?.closest('.menu-item');
+				 console.log(item);
+				 
+        if (item) {
+            item.classList.add('active');
+            item.querySelector('.submenu')?.style.setProperty('display', 'block');
+            item.querySelector('.has-subs')?.classList.add('active');
+        }
+    });
 
+	//Reset toggle links to avoid duplicate event listeners
     document.querySelectorAll('.has-subs').forEach(toggleLink => {
         const newToggle = toggleLink.cloneNode(true);
         toggleLink.parentNode.replaceChild(newToggle, toggleLink);
     });
 
+	// Add click event for submenu toggles
     document.querySelectorAll('.has-subs').forEach(toggleLink => {
         toggleLink.addEventListener('click', function(e) {
             e.preventDefault();
@@ -246,6 +273,7 @@ function handleSidebar() {
             const menuItem = this.closest('.menu-item');
             if (!submenu) return;
 
+			// Close all other submenus
             document.querySelectorAll('.has-subs').forEach(link => {
                 if (link !== this) {
                     link.classList.remove('active');
@@ -255,6 +283,7 @@ function handleSidebar() {
                 }
             });
 
+			// Toggle the clicked submenu
             const isOpening = submenu.style.display === 'none' || getComputedStyle(submenu).display === 'none';
             if (isOpening) {
                 slideDown(submenu, 500);
@@ -268,11 +297,13 @@ function handleSidebar() {
         });
     });
 
+	//Reset normal links to avoid duplicate event listeners
     document.querySelectorAll('.menu-item > a:not(.has-subs)').forEach(link => {
         const newLink = link.cloneNode(true);
         link.parentNode.replaceChild(newLink, link);
     });
 
+	//Add click event for normal menu links
     document.querySelectorAll('.menu-item > a:not(.has-subs)').forEach(link => {
         link.addEventListener('click', () => {
             document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
@@ -280,6 +311,7 @@ function handleSidebar() {
         });
     });
 
+	//Prevent submenu container clicks from bubbling up
     document.querySelectorAll('.submenu').forEach(submenu => {
         submenu.addEventListener('click', e => {
             if (!e.target.closest('a')) e.stopPropagation();
