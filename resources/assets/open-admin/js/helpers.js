@@ -170,7 +170,10 @@ function bindSubmitButtonWithLoading() {
 						btn.html(btn.data('originalText'));
 						btn.prop('disabled', false);
 					});
-				} else {
+				} else {					
+					if (typeof tinymce !== 'undefined') {
+						tinymce.triggerSave();
+					}
 					const formData = new FormData(form[0]);
 					$.pjax({
 						url: actionUrl,
