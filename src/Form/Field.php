@@ -1187,7 +1187,7 @@ class Field implements Renderable
      */
     public function label(): string
     {
-        return $this->label;
+        return $this->label?:"";
     }
 
     /**
