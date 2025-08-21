@@ -15,12 +15,7 @@
         <div class="col-md-{{$width['label']}}"></div>
 
 
-        <div class="col-md-{{$width['field']}} d-flex align-items-center justify-content-end">
-            @if(in_array('reset', $buttons))
-            <div class="btn-group pt-3 pe-2">
-                <button type="reset" class="btn btn-warning text-white">{{ trans('admin.reset') }}</button>
-            </div>
-            @endif
+        <div class="col-md-{{$width['field']}} d-flex justify-content-start flex-row-reverse">
 
             @if(in_array('submit', $buttons))
             <div class="btn-group pt-3 pe-2 float-end">
@@ -33,6 +28,12 @@
                 </label>
             @endforeach
 
+            @endif
+
+            @if(in_array('reset', $buttons))
+            <div class="btn-group pt-3 pe-2">
+                <button type="reset" class="btn btn-warning text-white">{{ trans('admin.reset') }}</button>
+            </div>
             @endif
         </div>
     </div>
