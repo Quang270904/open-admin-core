@@ -12060,7 +12060,7 @@ textarea.form-control-lg {
 
 .table {
   color: var(--table-color);
-  --bs-table-bg: transparent;
+  --bs-table-bg: transparent !important;
   --bs-table-striped-color: var(--table-color);
   --bs-table-striped-bg: rgba(0, 0, 0, 0.02);
   --bs-table-active-color: var(--table-color);
