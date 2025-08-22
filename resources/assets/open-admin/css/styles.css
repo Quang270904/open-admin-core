@@ -2970,11 +2970,20 @@ textarea.form-control-lg {
 }
 .btn:disabled, .btn.disabled, fieldset:disabled .btn {
   color: var(--bs-btn-disabled-color);
-  pointer-events: none;
+  /* pointer-events: none; */
   background-color: var(--bs-btn-disabled-bg);
   border-color: var(--bs-btn-disabled-border-color);
-  opacity: var(--bs-btn-disabled-opacity);
+  /* opacity: var(--bs-btn-disabled-opacity); */
 }
+
+.btn[disabled], fieldset[disabled] .btn {
+    cursor: not-allowed !important;
+    filter: alpha(opacity=65) !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    opacity: .65 !important;
+}
+
 
 .btn-primary {
   --bs-btn-color: #fff;
