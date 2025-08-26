@@ -3084,7 +3084,7 @@ textarea.form-control-lg {
 }
 
 .btn-warning {
-  --bs-btn-color: #fff;
+  --bs-btn-color: #fff !important;
   --bs-btn-bg: #ffc107;
   --bs-btn-border-color: #ffc107;
   --bs-btn-hover-color: #fff;
