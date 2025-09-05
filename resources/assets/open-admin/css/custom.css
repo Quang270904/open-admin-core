@@ -505,6 +505,7 @@ select[id^=bootstrap-duallistbox-]:focus-visible {
 }
 
 .btn-warning:hover {
+  color: #fff;
   background-color: #e0a800;
   border-color: #e0a800;
 }
