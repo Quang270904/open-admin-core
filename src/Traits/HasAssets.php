@@ -98,7 +98,6 @@ trait HasAssets
      * @var array<string>
      */
     public static $baseJs = [
-        "https://code.jquery.com/jquery-3.7.1.min.js",
         "vendor/open-admin/open-admin/js/bootstrap.bundle.min.js",
         "vendor/open-admin/open-admin/js/popper.min.js",
         'vendor/open-admin/bootstrap-fileinput/js/fileinput.min.js',
