@@ -5,7 +5,7 @@
         @if($useAction)
         <span class="pull-right dd-nodrag">
             <a href="{{ $path }}/{{ $branch[$keyName] }}/edit"><i class="fa fa-edit"></i></a>
-            <a onclick="admin.tree.delete({{ $branch[$keyName] }})"  data-id="{{ $branch[$keyName] }}" class="tree_branch_delete"><i class="fa fa-trash"></i></a>
+            <a onclick="admin.tree.delete({{ $branch[$keyName] }})"  data-id="{{ $branch[$keyName] }}" class="tree_branch_delete" style="cursor: pointer;"><i class="fa fa-trash"></i></a>
         </span>
         @endif
     </div>
