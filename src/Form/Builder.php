@@ -123,7 +123,7 @@ class Builder
      * @var bool
      */
     protected $disableValidate = false;
-    
+
     /**
      * @var string
      */
@@ -152,7 +152,7 @@ class Builder
     {
         $this->tools = new Tools($this);
         $this->footer = new static::$footerClassName($this);
-        $this->formClass = 'model-form-'.uniqid();
+        $this->formClass = 'model-form-' . uniqid();
     }
 
     /**
@@ -235,9 +235,9 @@ class Builder
      */
     public function setResourceId($id)
     {
-        if($id instanceof \Illuminate\Database\Eloquent\Model){
+        if ($id instanceof \Illuminate\Database\Eloquent\Model) {
             $this->id = $id->id;
-        }else{
+        } else {
             $this->id = $id;
         }
 
@@ -346,7 +346,7 @@ class Builder
         }
 
         if ($this->isMode(static::MODE_EDIT)) {
-            return $this->form->resource().'/'.$this->id;
+            return $this->form->resource() . '/' . $this->id;
         }
 
         if ($this->isMode(static::MODE_CREATE)) {
@@ -509,12 +509,11 @@ class Builder
     public function hasFile(): bool
     {
         foreach ($this->fields() as $field) {
-            if(method_exists($field, 'hasFile')){
-                if($field->hasFile()){
+            if (method_exists($field, 'hasFile')) {
+                if ($field->hasFile()) {
                     return true;
                 }
-            }
-            elseif ($field instanceof Field\File || $field instanceof Field\MultipleFile) {
+            } elseif ($field instanceof Field\File || $field instanceof Field\MultipleFile) {
                 return true;
             }
         }
@@ -543,7 +542,7 @@ class Builder
         if ($redirectCamera) {
             $this->addHiddenField((new Hidden(static::REDIRECT_CAMERA))->value($redirectCamera));
         }
-        
+
         $current = URL::current();
         $full = URL::full();
 
@@ -554,7 +553,7 @@ class Builder
         $set_previous = $previous;
         $ids = request('ids');
         if (!empty($ids)) {
-            $set_previous = $current.'?ids[]='.implode('&ids[]=', $ids);
+            $set_previous = $current . '?ids[]=' . implode('&ids[]=', $ids);
         }
 
         if (Str::contains($previous, url($this->getResource()))) {
@@ -580,7 +579,7 @@ class Builder
         $this->addRedirectUrlField();
 
         $attributes = [];
-        $attributes['action'] = $this->getAction();
+        $attributes['action'] = url($this->getAction());
         $attributes['method'] = Arr::get($options, 'method', 'post');
         $attributes['class'] = $this->formClass. ' ' . $this->form->getUniqueName();
         $attributes['accept-charset'] = 'UTF-8';
