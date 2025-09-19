@@ -489,7 +489,7 @@ select[id^=bootstrap-duallistbox-]:focus-visible {
 }
 
 .box {
-  border-radius: 6px;
+  border-radius: 2px;
   border-top: 3px solid #d2d6de;
 }
 
