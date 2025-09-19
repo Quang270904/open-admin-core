@@ -57,11 +57,6 @@ class Date extends Text
             $value = null;
         }
 
-        // if the field is not present in the request it should not be processed
-        if (empty($value) && !request()->has($this->column)) {
-            $value = false;
-        }
-
         return $value;
     }
 
