@@ -6,10 +6,6 @@ use OpenAdminCore\Admin\Form\Field;
 
 class Display extends Field
 {
-    public function prepare($value)
-    {
-        return $this->original();
-    }
     /**
      * Display text
      *
@@ -80,5 +76,10 @@ class Display extends Field
             'displayClass' => $this->displayClass,
             'escape' => $this->escape,
         ]);
+    }
+
+    public function prepare($value)
+    {
+        return $this->original() ?: $value;
     }
 }
