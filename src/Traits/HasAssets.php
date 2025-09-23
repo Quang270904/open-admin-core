@@ -165,7 +165,8 @@ trait HasAssets
         if (!$css = static::getMinifiedCss()) {
             $css = array_merge(static::$css, static::baseCss());
         }
-
+        
+        $css = array_merge($css, self::$csslast); // add css added at end
         $css = array_merge($css, static::$minifyIgnoresCss); // add minified ignored files
         $css = array_filter(array_unique($css));
 
@@ -429,7 +430,7 @@ trait HasAssets
         $dom = new \DOMDocument();
 
         libxml_use_internal_errors(true);
-        $dom->loadHTML('<?xml encoding="utf-8" ?>'.$string);
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $string);
         libxml_use_internal_errors(false);
 
         if ($head = $dom->getElementsByTagName('head')->item(0)) {
@@ -448,7 +449,7 @@ trait HasAssets
                         if ($child->hasAttribute('src')) {
                             static::js($child->getAttribute('src'));
                         } else {
-                            static::script(';(function () {'.$child->nodeValue.'})();');
+                            static::script(';(function () {' . $child->nodeValue . '})();');
                         }
 
                         continue;
@@ -468,7 +469,7 @@ trait HasAssets
                     }
 
                     if ($child->tagName == 'script' && !empty($child->nodeValue)) {
-                        static::script(';(function () {'.$child->nodeValue.'})();');
+                        static::script(';(function () {' . $child->nodeValue . '})();');
                         continue;
                     }
 
