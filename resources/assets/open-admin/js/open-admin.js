@@ -203,10 +203,19 @@ admin.ajax = {
         // history back
         window.onpopstate = function (event) {
             preventPopState = true;
+            // Restore scroll position from browser history state when user clicks back/forward
+            let scrollY = event.state && event.state.scrollY ? event.state.scrollY : 0;
+            
             $.pjax({
                 url: document.location.href,
                 container: '#pjax-container',
-                timeout: 2000
+                timeout: 2000,
+                scrollTo: false // Disable PJAX auto-scroll to prevent jumping to top
+            }).done(function() {
+                // Restore the saved scroll position after PJAX content is loaded
+                if (scrollY > 0) {
+                    setTimeout(() => window.scrollTo(0, scrollY), 50);
+                }
             });
         };
 
@@ -240,7 +249,10 @@ admin.ajax = {
 
     setUrl: function (url) {
         if (url != document.location.href && !admin.ajax.currenTarget) {
-            history.pushState({}, url, url);
+            // Save current scroll position before navigating to new page
+            let scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+            // Store scroll position in browser history state for later restoration
+            history.pushState({ scrollY: scrollY }, '', url);
         }
     },
 
