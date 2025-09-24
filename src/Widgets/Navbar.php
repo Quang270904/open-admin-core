@@ -20,7 +20,8 @@ class Navbar implements Renderable
     {
         $this->elements = [
             'left'  => collect(),
-            'right' => collect(),
+            'right' => collect()
+            ,
         ];
     }
 

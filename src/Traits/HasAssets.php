@@ -86,6 +86,7 @@ trait HasAssets
         // generated through sass
         'vendor/open-admin/open-admin/css/styles.css',
         'vendor/open-admin/AdminLTE4/css/adminlte.min.css',
+        'vendor/open-admin/AdminLTE/dist/css/AdminLTE.min.css',
         'vendor/open-admin/open-admin/css/custom.css',
         'vendor/open-admin/toastr/build/toastr.min.css',
         "/vendor/open-admin/bootstrap-duallistbox/dist/bootstrap-duallistbox.min.css?v=4.0.2",

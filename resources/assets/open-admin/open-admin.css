@@ -103,6 +103,7 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
   display: none;
 }
 
+
 @media screen and (max-width: 767px) {
     .field-header{
         margin-left: 0;
