@@ -1874,7 +1874,7 @@ progress {
   --bs-table-hover-color: var(--bs-emphasis-color);
   --bs-table-hover-bg: rgba(var(--bs-emphasis-color-rgb), 0.075);
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 1rem !important;
   vertical-align: top;
   border-color: var(--bs-table-border-color);
 }
@@ -4724,8 +4724,8 @@ textarea.form-control-lg {
   --bs-pagination-focus-bg: var(--bs-secondary-bg);
   --bs-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(58, 150, 255, 0.25);
   --bs-pagination-active-color: #fff;
-  --bs-pagination-active-bg: #3a96ff;
-  --bs-pagination-active-border-color: #3a96ff;
+  --bs-pagination-active-bg: #337ab7;
+  --bs-pagination-active-border-color: #337ab7;
   --bs-pagination-disabled-color: var(--bs-secondary-color);
   --bs-pagination-disabled-bg: var(--bs-secondary-bg);
   --bs-pagination-disabled-border-color: var(--bs-border-color);
