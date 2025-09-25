@@ -97,8 +97,8 @@
   border-left: none;
   min-height: 87.5vh !important;
   background-color: #ecf0f5;
-  overflow: auto;
-  overflow-x: hidden;
+  /* overflow: auto; */
+  /* overflow-x: hidden; */
   transition: margin-left 0.1s ease;
 }
 
@@ -375,7 +375,7 @@ html {
 .btn {
   font-size: 12px !important;
   width: auto;
-  height: fit-content;
+  /* height: fit-content; */
 }
 
 .btn-ssm {
