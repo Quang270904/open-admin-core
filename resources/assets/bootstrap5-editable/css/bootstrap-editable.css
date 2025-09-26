@@ -226,6 +226,20 @@ a.editable-click.editable-disabled:hover {
   display: inline-block;
 }
 
+.form-control-feedback {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #999;
+}
+
+.form-group {
+  position: relative;
+}
+
+
 .input-append.date .add-on i,
 .input-prepend.date .add-on i {
   display: block;
