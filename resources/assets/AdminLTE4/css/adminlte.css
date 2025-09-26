@@ -3419,7 +3419,7 @@ textarea.form-control-lg {
 }
 
 .dropdown-toggle {
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 .dropdown-toggle::after {
   display: inline-block;

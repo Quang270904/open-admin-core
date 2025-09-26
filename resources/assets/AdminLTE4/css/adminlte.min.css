@@ -3898,7 +3898,7 @@ fieldset:disabled .btn {
 }
 
 .dropdown-toggle {
-    white-space: nowrap
+    /* white-space: nowrap */
 }
 
 /* .dropdown-toggle::after {
@@ -16281,7 +16281,7 @@ body:not(.app-loaded) .app-sidebar {
     position: absolute;
     right: 0;
     left: auto;
-    /* top:12px; */
+    transform: translate(0, 0) !important;
 }
 
 @media (max-width:575.98px) {
@@ -16310,7 +16310,7 @@ body:not(.app-loaded) .app-sidebar {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     width: 280px;
-    padding: 0
+    padding: 0 !important;
 }
 
 .navbar-nav>.user-menu>.dropdown-menu,

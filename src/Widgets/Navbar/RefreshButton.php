@@ -26,8 +26,8 @@ class RefreshButton implements Renderable
     }
 
     $(function() {
-        $('.refresh-button').off('click').on('click', function() {
-            admin.ajax.reload();
+        $('.container-refresh').off('click').on('click', function() {
+            $.admin.reload();
             showToastrSuccess();
         });
     });
