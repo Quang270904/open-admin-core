@@ -2421,7 +2421,7 @@ progress {
     display: block;
     width: 100%;
     padding: .375rem .75rem;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 400;
     line-height: 1.5;
     color: var(--bs-body-color);

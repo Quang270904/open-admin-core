@@ -368,14 +368,16 @@ html {
   font-size: 13px !important;
 }
 
-.btn-sm,
 .btn-group-sm > .btn,
 .btn.btn-sm.btn-success,
-.btn-group,
 .btn {
-  font-size: 12px !important;
+  font-size: 14px !important;
   width: auto;
   /* height: fit-content; */
+}
+
+.btn-sm {
+  font-size: 12px !important;
 }
 
 .btn-ssm {

@@ -3764,6 +3764,7 @@ textarea.form-control-lg {
 
 .btn-group {
   border-radius: var(--bs-border-radius);
+  font-size: 12px !important;
 }
 .btn-group > :not(.btn-check:first-child) + .btn,
 .btn-group > .btn-group:not(:first-child) {
