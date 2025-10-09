@@ -8,15 +8,15 @@
 
         <div class="input-group flex-nowrap ">
 
-            @if ($prepend)
+            {{-- @if ($prepend)
             <span class="input-group-addon d-flex align-items-center justify-content-center">{!! $prepend !!}</span>
-            @endif
+            @endif --}}
 
             <input {!! $attributes !!} />
 
-            @if ($append)
+            {{-- @if ($append)
                 <span class="input-group-addon clearfix">{!! $append !!}</span>
-            @endif
+            @endif --}}
 
         </div>
 
