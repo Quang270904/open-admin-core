@@ -201,14 +201,14 @@ class MultipleFile extends Field
             return $this->sortFiles($files);
         }
 
-        if(is_string($files)){
+        if (is_string($files)) {
             $files = [$files];
         }
         $targets = array_map([$this, 'prepareForeach'], $files);
-        
+
         // get original
         $original = $this->original();
-        if(is_string($original)){
+        if (is_string($original)) {
             $original = [$original];
         }
 
@@ -258,6 +258,15 @@ class MultipleFile extends Field
         return array_values(array_map([$this, 'objectUrl'], $files));
     }
 
+    public function fixIfJsonString($arr)
+    {
+        if (!empty($arr) && !is_array($arr)) {
+            $arr = json_decode($arr);
+        }
+
+        return $arr;
+    }
+
     /**
      * set fileIndex.
      *
@@ -295,7 +304,7 @@ class MultipleFile extends Field
      */
     protected function initialFileIndex($index, $file)
     {
-        if($this->fileIndex instanceof \Closure){
+        if ($this->fileIndex instanceof \Closure) {
             return $this->fileIndex->call($this, $index, $file);
         }
         return $index;
@@ -311,7 +320,7 @@ class MultipleFile extends Field
      */
     protected function initialCaption($caption, $key)
     {
-        if($this->caption instanceof \Closure){
+        if ($this->caption instanceof \Closure) {
             return $this->caption->call($this, $caption, $key);
         }
         return basename($caption);
@@ -323,8 +332,8 @@ class MultipleFile extends Field
     protected function initialPreviewConfig()
     {
         $files = $this->value ?: [];
-        
-        if(is_string($files)){
+
+        if (is_string($files)) {
             $files = [$files];
         }
 
@@ -397,7 +406,7 @@ $("{$this->getElementClassSelector()}").on('filebeforedelete', function() {
     });
 });
 EOT;
-            if(isset($this->options['deletedEvent'])){
+            if (isset($this->options['deletedEvent'])) {
                 $deletedEvent = $this->options['deletedEvent'];
                 $this->script .= <<<EOT
                 $("{$this->getElementClassSelector()}").on('filedeleted', function(event, key, jqXHR, data) {
