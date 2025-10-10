@@ -90,7 +90,14 @@ trait ImageField
      */
     public function render()
     {
-        $this->options(['allowedFileTypes' => ['image'], 'msgPlaceholder' => trans('admin.choose_image')]);
+        $this->options([
+            'msgPlaceholder' => trans('admin.choose_image'),
+            'allowedFileTypes' => ['image'],
+            'previewFileType' => 'image',
+            'preferIconicPreview' => false,
+            'previewFileIcon' => '<i class="fa fa-file"></i>',
+            'allowedPreviewTypes' => ['image'],
+        ]);
 
         return parent::render();
     }
@@ -133,10 +140,10 @@ trait ImageField
             $ext = pathinfo($this->original, PATHINFO_EXTENSION);
 
             // We remove extension from file name so we can append thumbnail type
-            $path = Str::replaceLast('.'.$ext, '', $this->original);
+            $path = Str::replaceLast('.' . $ext, '', $this->original);
 
             // We merge original name + thumbnail name + extension
-            $path = $path.'-'.$name.'.'.$ext;
+            $path = $path . '-' . $name . '.' . $ext;
 
             if ($this->storage->exists($path)) {
                 $this->storage->delete($path);
@@ -158,10 +165,10 @@ trait ImageField
             $ext = pathinfo($this->name, PATHINFO_EXTENSION);
 
             // We remove extension from file name so we can append thumbnail type
-            $path = Str::replaceLast('.'.$ext, '', $this->name);
+            $path = Str::replaceLast('.' . $ext, '', $this->name);
 
             // We merge original name + thumbnail name + extension
-            $path = $path.'-'.$name.'.'.$ext;
+            $path = $path . '-' . $name . '.' . $ext;
 
             /** @var \Intervention\Image\Image $image */
             $image = InterventionImage::make($file);

@@ -225,7 +225,7 @@ admin.ajax = {
         // now handled by admin.form.initAjax()
         // also needs to work for widgets
 
-        NProgress.configure({ parent: '#main' });
+        NProgress.configure({ parent: '#app' });
     },
 
     // use navigate when you want history working
@@ -267,34 +267,34 @@ admin.ajax = {
         this.request(url, obj);
     },
 
-    request: function (url, obj, result_function) {
-        if (typeof obj == 'undefined') {
-            obj = {};
-        }
+    // request: function (url, obj, result_function) {
+    //     if (typeof obj == 'undefined') {
+    //         obj = {};
+    //     }
 
-        NProgress.start();
+    //     NProgress.start();
 
-        obj.url = url;
-        let axios_obj = merge_default(this.defaults, obj);
+    //     obj.url = url;
+    //     let axios_obj = merge_default(this.defaults, obj);
 
-        axios(axios_obj)
-            .then(function (response) {
-                if (typeof result_function === 'function') {
-                    result_function(response);
-                } else {
-                    admin.ajax.done(response);
-                }
-            })
-            .catch(function (error) {
-                admin.ajax.error(error);
-            })
-            .then(function () {
-                NProgress.done();
-                if (typeof result_function == 'undefined' && !admin.ajax.currenTarget) {
-                    admin.pages.init();
-                }
-            });
-    },
+    //     axios(axios_obj)
+    //         .then(function (response) {
+    //             if (typeof result_function === 'function') {
+    //                 result_function(response);
+    //             } else {
+    //                 admin.ajax.done(response);
+    //             }
+    //         })
+    //         .catch(function (error) {
+    //             admin.ajax.error(error);
+    //         })
+    //         .then(function () {
+    //             NProgress.done();
+    //             if (typeof result_function == 'undefined' && !admin.ajax.currenTarget) {
+    //                 admin.pages.init();
+    //             }
+    //         });
+    // },
 
     // posts and load this into the page
     loadPost: function (url, data) {
@@ -489,4 +489,25 @@ $(document).on('pjax:end', function () {
             title: el.getAttribute('data-bs-original-title') || el.getAttribute('title')
         });
     });
+});
+
+$(document).on('pjax:send', function (xhr) {
+    if (xhr.relatedTarget && xhr.relatedTarget.tagName && xhr.relatedTarget.tagName.toLowerCase() === 'form') {
+        $submit_btn = $('form[pjax-container] :submit');
+        if ($submit_btn) {
+            $submit_btn.button('loading')
+        }
+    }
+    NProgress.start();
+});
+
+$(document).on('pjax:complete', function (xhr) {
+    if (xhr.relatedTarget && xhr.relatedTarget.tagName && xhr.relatedTarget.tagName.toLowerCase() === 'form') {
+        $submit_btn = $('form[pjax-container] :submit');
+        if ($submit_btn) {
+            $submit_btn.button('reset')
+        }
+    }
+    NProgress.done();
+    $.admin.grid.selects = {};
 });
