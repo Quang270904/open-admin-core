@@ -19,8 +19,8 @@ class Number extends Text
     public function render()
     {
         $this->defaultAttribute('type', 'number');
-        $this->append("<i class='fa fa-plus plus'></i>");
-        $this->prepend("<i class='fa fa-minus minus'></i>");
+        // $this->append("<i class='fa fa-plus plus'></i>");
+        // $this->prepend("<i class='fa fa-minus minus'></i>");
         $this->default($this->default);
 
         $this->script = <<<EOT
