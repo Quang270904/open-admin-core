@@ -159,8 +159,7 @@ function bindSubmitButtonWithLoading() {
 
 				if (method === 'GET') {
 					const formData = form.serialize();
-					const fullUrl = actionUrl.split('?')[0] + '?' + formData;
-
+					const fullUrl = actionUrl + (actionUrl.includes('?') ? '&' : '?') + formData;						
 					$.pjax({
 						url: fullUrl,
 						container: '#pjax-container',
