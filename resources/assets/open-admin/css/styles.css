@@ -547,6 +547,17 @@ legend + * {
   padding: 0;
 }
 
+.bootstrap-datetimepicker-widget [data-action^="increment"] span,
+.bootstrap-datetimepicker-widget [data-action^="decrement"] span {
+  color: #3c8dbc !important;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.bootstrap-datetimepicker-widget [data-action^="increment"] span:hover,
+.bootstrap-datetimepicker-widget [data-action^="decrement"] span:hover {
+  color: #000 !important;
+}
+
 ::-webkit-inner-spin-button {
   height: auto;
 }
@@ -2751,9 +2762,6 @@ textarea.form-control-lg {
   clear: both;
   content: " ";
 }
-
-
-
 
 .valid-feedback {
   display: none;

@@ -2,6 +2,8 @@
 
 namespace OpenAdminCore\Admin\Form\Field;
 
+use OpenAdminCore\Admin\Facades\Admin;
+
 class Time extends Date
 {
     /**
@@ -17,6 +19,22 @@ class Time extends Date
         $this->prepend('<i class="fa fa-clock-o fa-fw"></i>')
             ->defaultAttribute('style', 'width: 150px !important; flex: 0 0 auto !important;');
 
-        return parent::render();
+        $rendered = parent::render();
+
+        $js = "
+            var picker = $('{$this->getElementClassSelector()}').parent().data('DateTimePicker');
+            var input = $('{$this->getElementClassSelector()}');
+            if (picker) {
+                input.on('focus', function() {
+                    if (!input.val()) {
+                        picker.date(moment('00:00:00', 'HH:mm:ss'));
+                        input.val(''); 
+                    }
+                });
+            }
+            ";  
+        Admin::script($js);
+
+        return $rendered;
     }
 }
