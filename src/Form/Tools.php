@@ -209,7 +209,7 @@ class Tools implements Renderable
 
         return <<<EOT
 <div class="btn-group pull-right" style="margin-right: 5px">
-    <a href="{$url}" class="btn btn-sm btn-default d-flex align-items-center p-2" title="$text"><i class="fa fa-list p-1"></i><span class="d-none d-md-inline">&nbsp;$text</span></a>
+    <a href="{$url}" class="btn btn-sm btn-default d-flex align-items-center" title="$text"><i class="fa fa-list p-1"></i><span class="d-none d-md-inline">&nbsp;$text</span></a>
 </div>
 EOT;
     }
@@ -226,7 +226,7 @@ EOT;
 
         return <<<HTML
 <div class="btn-group pull-right" style="margin-right: 5px">
-    <a href="{$url}" class="btn btn-sm btn-primary d-flex align-items-center p-2" title="{$view}">
+    <a href="{$url}" class="btn btn-sm btn-primary d-flex align-items-center" title="{$view}">
         <i class="fa fa-eye p-1"></i><span class="d-none d-md-inline"> {$view}</span>
     </a>
 </div>

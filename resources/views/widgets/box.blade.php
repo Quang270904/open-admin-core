@@ -3,7 +3,7 @@
         @if($title || $tools)
             <div class="box-header with-border d-flex box-header with-border p-1 px-3 pt-4">
                 <h3 class="box-title">{{ $title }}</h3>
-                <div class="box-tools row float-end flex-row-reverse mb-0">
+                <div class="box-tools">
                     @foreach($tools as $tool)
                         {!! $tool !!}
                     @endforeach
