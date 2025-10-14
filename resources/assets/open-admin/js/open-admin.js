@@ -205,13 +205,13 @@ admin.ajax = {
             preventPopState = true;
             // Restore scroll position from browser history state when user clicks back/forward
             let scrollY = event.state && event.state.scrollY ? event.state.scrollY : 0;
-            
+
             $.pjax({
                 url: document.location.href,
                 container: '#pjax-container',
                 timeout: 2000,
                 scrollTo: false // Disable PJAX auto-scroll to prevent jumping to top
-            }).done(function() {
+            }).done(function () {
                 // Restore the saved scroll position after PJAX content is loaded
                 if (scrollY > 0) {
                     setTimeout(() => window.scrollTo(0, scrollY), 50);
@@ -426,7 +426,7 @@ admin.pages = {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     },
-    
+
 };
 
 admin.collectGarbage = function () {
@@ -488,6 +488,13 @@ $(document).on('pjax:end', function () {
         new bootstrap.Tooltip(el, {
             title: el.getAttribute('data-bs-original-title') || el.getAttribute('title')
         });
+    });
+    $('select').each(function () {
+        if (!$(this).data('select2')) {
+            $(this).select2({
+                width: '100%'
+            });
+        }
     });
 });
 
