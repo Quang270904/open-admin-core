@@ -2561,7 +2561,7 @@ a:focus {
     right: 0;
     min-width: 100%;
     min-height: 100%;
-    font-size: 100px;
+    /* font-size: 100px; */
     text-align: right;
     opacity: 0;
     filter: alpha(opacity=0);

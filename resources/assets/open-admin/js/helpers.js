@@ -194,13 +194,13 @@ function bindSubmitButtonWithLoading() {
 						contentType: false
 					});
 				}
-			// } else {
-			// 	e.preventDefault();
-			// 	const firstInvalid = form.find(':invalid')[0];
-			// 	if (firstInvalid) {
-			// 		firstInvalid.scrollIntoView({ behavior: 'instant', block: 'center' });
-			// 		firstInvalid.reportValidity();
-			// 	}
+			} else {
+				e.preventDefault();
+				const firstInvalid = form.find(':invalid')[0];
+				if (firstInvalid) {
+					firstInvalid.scrollIntoView({ behavior: 'instant', block: 'center' });
+					firstInvalid.reportValidity();
+				}
 			}
 		});
 	});
