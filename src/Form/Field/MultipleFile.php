@@ -208,7 +208,10 @@ class MultipleFile extends Field
 
         // get original
         $original = $this->original();
-        if (is_string($original)) {
+        
+        if (is_null($original)) {
+            $original = [];
+        } elseif (is_string($original)) {
             $original = [$original];
         }
 
