@@ -926,9 +926,6 @@ hr {
   .nav {
     margin-bottom: 10px;
   }
-  form.search-form {
-    margin: 0 !important;
-  }
   .btn-sm.btn-danger {
     padding: 0.5rem !important;
   }
