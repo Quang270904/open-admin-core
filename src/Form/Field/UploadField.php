@@ -162,6 +162,7 @@ trait UploadField
             'showCancel'           => false,
             'dropZoneEnabled'      => false,
             'preferIconicPreview'  => true,
+            'alwaysPreviewFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'],
             'allowedPreviewTypes'  => ['image'],
             'previewFileIcon' => '<i class="fa fa-file"></i>',
             'previewFileIconSettings' => array(
