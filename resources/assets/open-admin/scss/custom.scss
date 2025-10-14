@@ -79,7 +79,7 @@
     background-color: #fff;
     color: #555;
     border: 1px solid #ddd;
-    border-top: 3px solid #0d6efd;
+    border-top: 3px solid #3c8dbc;
     border-bottom-color: transparent;
     border-left-color: #f4f4f4;
     border-right-color: #f4f4f4;
@@ -91,7 +91,7 @@
     background-color: #fff;
     color: #555;
     border: 1px solid #ddd;
-    border-top: 3px solid #0d6efd;
+    border-top: 3px solid #3c8dbc;
     border-bottom-color: transparent;
 }
 
@@ -146,7 +146,7 @@ ul.jstree-container-ul.jstree-children {
 }
 
 .fixed-contents-color {
-    background-color: #0d6efd;
+    background-color: #3c8dbc;
 }
 
 .form-select {
@@ -404,12 +404,12 @@ html {
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: #0d6efd;
+    background-color: #3c8dbc;
     color: white
 }
 
 span.bootstrap-switch-handle-on.bootstrap-switch-primary {
-    background-color: #0d6efd !important;
+    background-color: #3c8dbc !important;
 }
 
 .card.custom-border-success {
@@ -480,7 +480,7 @@ select[id^="bootstrap-duallistbox-"] {
     border-color: #ddd;
 }
 select[id^="bootstrap-duallistbox-"]:hover {
-    border-color: #0d6efd;
+    border-color: #3c8dbc;
     box-shadow: none;
 }
 
@@ -800,8 +800,8 @@ a.fa.fa-fw.fa-sort:focus {
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #0d6efd;
-    border: 1px solid #0d6efd;
+    background-color: #3c8dbc;
+    border: 1px solid #3c8dbc;
     color: #fff;
 }
 
