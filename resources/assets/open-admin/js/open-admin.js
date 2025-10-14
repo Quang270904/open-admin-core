@@ -267,34 +267,34 @@ admin.ajax = {
         this.request(url, obj);
     },
 
-    // request: function (url, obj, result_function) {
-    //     if (typeof obj == 'undefined') {
-    //         obj = {};
-    //     }
+    request: function (url, obj, result_function) {
+        if (typeof obj == 'undefined') {
+            obj = {};
+        }
 
-    //     NProgress.start();
+        NProgress.start();
 
-    //     obj.url = url;
-    //     let axios_obj = merge_default(this.defaults, obj);
+        obj.url = url;
+        let axios_obj = merge_default(this.defaults, obj);
 
-    //     axios(axios_obj)
-    //         .then(function (response) {
-    //             if (typeof result_function === 'function') {
-    //                 result_function(response);
-    //             } else {
-    //                 admin.ajax.done(response);
-    //             }
-    //         })
-    //         .catch(function (error) {
-    //             admin.ajax.error(error);
-    //         })
-    //         .then(function () {
-    //             NProgress.done();
-    //             if (typeof result_function == 'undefined' && !admin.ajax.currenTarget) {
-    //                 admin.pages.init();
-    //             }
-    //         });
-    // },
+        axios(axios_obj)
+            .then(function (response) {
+                if (typeof result_function === 'function') {
+                    result_function(response);
+                } else {
+                    admin.ajax.done(response);
+                }
+            })
+            .catch(function (error) {
+                admin.ajax.error(error);
+            })
+            .then(function () {
+                NProgress.done();
+                if (typeof result_function == 'undefined' && !admin.ajax.currenTarget) {
+                    admin.pages.init();
+                }
+            });
+    },
 
     // posts and load this into the page
     loadPost: function (url, data) {

@@ -67,18 +67,19 @@ function showToastrSuccess() {
     });
 }
 
-// Ghi đè hàm init nếu chưa làm
-if (typeof admin.pages._originalInit === 'undefined') {
-    admin.pages._originalInit = admin.pages.init;
+if (typeof admin !== 'undefined' && admin.pages) {
+    if (typeof admin.pages._originalInit === 'undefined') {
+        admin.pages._originalInit = admin.pages.init;
 
-    admin.pages.init = function () {
-        admin.pages._originalInit.call(this);
-        if (window._showToastrOnPjax) {
-            showToastrSuccess();
-            window._showToastrOnPjax = false;
-        }
-    };
-}
+        admin.pages.init = function () {
+            admin.pages._originalInit.call(this);
+            if (window._showToastrOnPjax) {
+                showToastrSuccess();
+                window._showToastrOnPjax = false;
+            }
+        };
+    }
+} 
 
 // Nếu window._showToastrOnPjax đang true khi load script
 if (window._showToastrOnPjax) {
