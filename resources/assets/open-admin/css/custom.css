@@ -386,6 +386,12 @@ html {
   padding: 0.25px 5px 0.25px 5px;
 }
 
+.btn-xs {
+  padding: 1px 5px;
+  font-size: 12px !important;
+  line-height: 1.5;
+}
+
 .btn.btn-primary.btn-file {
   margin: 0px;
 }
