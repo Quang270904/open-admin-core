@@ -489,13 +489,6 @@ $(document).on('pjax:end', function () {
             title: el.getAttribute('data-bs-original-title') || el.getAttribute('title')
         });
     });
-    $('select').each(function () {
-        if (!$(this).data('select2')) {
-            $(this).select2({
-                width: '100%'
-            });
-        }
-    });
 });
 
 $(document).on('pjax:send', function (xhr) {

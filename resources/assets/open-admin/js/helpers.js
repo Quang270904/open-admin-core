@@ -159,7 +159,7 @@ function bindSubmitButtonWithLoading() {
 
 				if (method === 'GET') {
 					const formData = form.serialize();
-					const fullUrl = actionUrl + (actionUrl.includes('?') ? '&' : '?') + formData;						
+					const fullUrl = actionUrl + (actionUrl.includes('?') ? '&' : '?') + formData;
 					$.pjax({
 						url: fullUrl,
 						container: '#pjax-container',
@@ -168,6 +168,12 @@ function bindSubmitButtonWithLoading() {
 					}).done(function () {
 						btn.html(btn.data('originalText'));
 						btn.prop('disabled', false);
+
+						$('#pjax-container select').each(function () {
+							if (!$(this).data('select2')) {
+								$(this).select2({ width: '100%' });
+							}
+						});
 					});
 				} else {
 					if (typeof tinymce !== 'undefined') {
