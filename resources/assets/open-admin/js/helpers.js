@@ -138,78 +138,80 @@ function htmlToElements(html) {
 
 
 function bindSubmitButtonWithLoading() {
-	$('form').each(function () {
-		var form = $(this);
-		form.find('button.submit, button[type="submit"], #search-btn').off('click.submit').on('click.submit', function (e) {
-			if (form[0].checkValidity()) {
-				const actionUrl = form.attr('action') || window.location.href;
-				if (/\/template\/export/.test(actionUrl)) {
-					form.off('submit');
-					form[0].submit();
-					return;
-				}
-				var btn = $(this);
-				btn.data('originalText', btn.html());
-				btn.html(btn.data('loading-text') || 'Loading...');
-				btn.prop('disabled', true);
-
-				e.preventDefault();
-
-				const method = (form.attr('method') || 'GET').toUpperCase();
-
-				if (method === 'GET') {
-					const formData = form.serialize();
-					const fullUrl = actionUrl + (actionUrl.includes('?') ? '&' : '?') + formData;
-					$.pjax({
-						url: fullUrl,
-						container: '#pjax-container',
-						type: 'GET',
-						timeout: 10000
-					}).done(function () {
-						btn.html(btn.data('originalText'));
-						btn.prop('disabled', false);
-
-						$('#pjax-container select').each(function () {
-							if (!$(this).data('select2')) {
-								$(this).select2({ width: '100%' });
-							}
-						});
-					});
-				} else {
-					if (typeof tinymce !== 'undefined') {
-						tinymce.triggerSave();
-					}
-
-					const hasFile = form.find('input[type="file"]').length > 0;
-
-					if (hasFile) {
-						console.log(form[0], hasFile);
-						form.off('submit');
-						form[0].submit();
-						return;
-					}
-
-					const formData = new FormData(form[0]);
-					$.pjax({
-						url: actionUrl,
-						data: formData,
-						container: '#pjax-container',
-						type: method,
-						timeout: 10000,
-						processData: false,
-						contentType: false
-					});
-				}
-			} else {
+	$(document).off('click.submit', 'form button.submit, form button[type="submit"], form #search-btn')
+		.on('click.submit', 'form button.submit, form button[type="submit"], form #search-btn', function (e) {
+			const btn = $(this);
+			const form = btn.closest('form');
+			if (!form[0].checkValidity()) {
 				e.preventDefault();
 				const firstInvalid = form.find(':invalid')[0];
 				if (firstInvalid) {
 					firstInvalid.scrollIntoView({ behavior: 'instant', block: 'center' });
 					firstInvalid.reportValidity();
 				}
+				return;
+			}
+
+			const actionUrl = form.attr('action') || window.location.href;
+
+			if (/\/template\/export/.test(actionUrl)) {
+				form.off('submit');
+				form[0].submit();
+				return;
+			}
+
+			e.preventDefault();
+			btn.data('originalText', btn.html());
+			btn.html(btn.data('loading-text') || 'Loading...');
+			btn.prop('disabled', true);
+
+			const method = (form.attr('method') || 'GET').toUpperCase();
+
+			if (method === 'GET') {
+				const formData = form.serialize();
+				const fullUrl = actionUrl + (actionUrl.includes('?') ? '&' : '?') + formData;
+
+				$.pjax({
+					url: fullUrl,
+					container: '#pjax-container',
+					type: 'GET',
+					timeout: 5000
+				}).done(function () {
+					btn.html(btn.data('originalText'));
+					btn.prop('disabled', false);
+
+
+					$('#pjax-container select').each(function () {
+						if (!$(this).data('select2')) {
+							$(this).select2({ width: '100%' });
+						}
+					});
+				});
+
+			} else {
+				if (typeof tinymce !== 'undefined') {
+					tinymce.triggerSave();
+				}
+
+				const hasFile = form.find('input[type="file"]').length > 0;
+				if (hasFile) {
+					form.off('submit');
+					form[0].submit();
+					return;
+				}
+
+				const formData = new FormData(form[0]);
+				$.pjax({
+					url: actionUrl,
+					data: formData,
+					container: '#pjax-container',
+					type: method,
+					timeout: 5000,
+					processData: false,
+					contentType: false
+				})
 			}
 		});
-	});
 }
 
 function clickEvent() {
