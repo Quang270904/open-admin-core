@@ -442,6 +442,8 @@ toastr.options = {
     timeOut: 4000
 };
 
+$.pjax.defaults.maxCacheLength = 0;
+
 $(function () {
     $('.sidebar-menu li:not(.treeview) > a').on('click', function () {
         var $parent = $(this).parent().addClass('active');
