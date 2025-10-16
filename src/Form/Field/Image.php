@@ -91,6 +91,9 @@ class Image extends File
      */
     public function render()
     {
+        $this->options([
+            'preferIconicPreview' => false,
+        ]);
         $this->filetype('image');
         return parent::render();
     }
