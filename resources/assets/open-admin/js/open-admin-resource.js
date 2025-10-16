@@ -49,7 +49,7 @@
                 var data = result.value;
                 if (typeof data === 'object') {
                     if (data.status) {
-                        swal(data.message || 'Delete successed!', '', 'success');
+                        swal(data.message || '削除しました！', '', 'success');
                     } else {
                         swal(data.message || 'Delete failed', '', 'error');
                     }
