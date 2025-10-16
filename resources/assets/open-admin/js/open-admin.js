@@ -547,9 +547,6 @@ $(document).on('pjax:end', function () {
         });
     });
 
-    requestAnimationFrame(() => {
-        $('#pjax-container select').not('.select2-hidden-accessible').select2({ width: '100%' });
-    });
 });
 
 $(document).on('pjax:send', function (xhr) {
