@@ -163,13 +163,13 @@
     .iradio_minimal-blue.checked {
         background-position: -140px 0;
     }
-    .iradio_minimal-blue.disabled {
+    /* .iradio_minimal-blue.disabled {
         background-position: -160px 0;
         cursor: default;
-    }
-    .iradio_minimal-blue.checked.disabled {
+    } */
+    /* .iradio_minimal-blue.checked.disabled {
         background-position: -180px 0;
-    }
+    } */
 
 /* Retina support */
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
