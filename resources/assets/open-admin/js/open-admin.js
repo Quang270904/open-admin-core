@@ -479,11 +479,11 @@ $(function () {
         if (matched) {
             $menu.show();
         }
-    }).click(function(event){
+    }).click(function (event) {
         event.stopPropagation();
     });
 
-    $('.sidebar-form .dropdown-menu li a').click(function (){
+    $('.sidebar-form .dropdown-menu li a').click(function () {
         $('.sidebar-form .autocomplete').val($(this).text());
     });
 });
@@ -543,6 +543,10 @@ $(document).on('pjax:end', function () {
         new bootstrap.Tooltip(el, {
             title: el.getAttribute('data-bs-original-title') || el.getAttribute('title')
         });
+    });
+
+    requestAnimationFrame(() => {
+        $('#pjax-container select').not('.select2-hidden-accessible').select2({ width: '100%' });
     });
 });
 
