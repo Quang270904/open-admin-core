@@ -51,7 +51,7 @@
                     if (data.status) {
                         swal(data.message || '削除しました！', '', 'success');
                     } else {
-                        swal(data.message || 'Delete failed', '', 'error');
+                        swal(data.message || '削除に失敗しました。', '', 'error');
                     }
                 }
             });
