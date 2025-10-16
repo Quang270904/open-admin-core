@@ -4580,7 +4580,7 @@ table.text-center th {
 
 .btn-twitter:focus,
 .btn-twitter.focus {
-    color: #fff;
+    color: #fff !;
     background-color: #2795e9;
     border-color: rgba(0, 0, 0, 0.2)
 }
@@ -4594,9 +4594,9 @@ table.text-center th {
 .btn-twitter:active,
 .btn-twitter.active,
 .open>.dropdown-toggle.btn-twitter {
-    color: #fff;
-    background-color: #2795e9;
-    border-color: rgba(0, 0, 0, 0.2)
+    color: #fff !important;
+    background-color: #2795e9 !important;
+    border-color: rgba(0, 0, 0, 0.2) !important
 }
 
 .btn-twitter:active,
