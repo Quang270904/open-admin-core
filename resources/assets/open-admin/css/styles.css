@@ -13696,6 +13696,10 @@ form .card-footer {
   border-top: 3px solid #00c0ef;
 }
 
+.custom-border-info {
+  border-top: 3px solid #00c0ef !important;
+}
+
 .card.custom-border-success {
   border-top: 3px solid #00a65a;
 }
