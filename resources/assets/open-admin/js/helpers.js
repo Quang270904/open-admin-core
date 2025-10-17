@@ -165,6 +165,11 @@ function bindSubmitButtonWithLoading() {
 			btn.html(btn.data('loading-text') || 'Loading...');
 			btn.prop('disabled', true);
 
+			function resetButton() {
+				btn.html(btn.data('originalText'));
+				btn.prop('disabled', false);
+			}
+
 			const method = (form.attr('method') || 'GET').toUpperCase();
 
 			if (method === 'GET') {
@@ -186,7 +191,7 @@ function bindSubmitButtonWithLoading() {
 							$(this).select2({ width: '100%' });
 						}
 					});
-				});
+				}).always(resetButton);
 
 			} else {
 				if (typeof tinymce !== 'undefined') {
@@ -210,6 +215,7 @@ function bindSubmitButtonWithLoading() {
 					processData: false,
 					contentType: false
 				})
+				.always(resetButton);
 			}
 		});
 }
@@ -392,3 +398,4 @@ function slideUp(element, duration = 300) {
 		element.style.removeProperty('transition');
 	}, duration);
 }
+
