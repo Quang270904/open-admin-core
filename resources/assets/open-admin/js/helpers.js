@@ -142,6 +142,11 @@ function bindSubmitButtonWithLoading() {
 		.on('click.submit', 'form button.submit, form button[type="submit"], form #search-btn', function (e) {
 			const btn = $(this);
 			const form = btn.closest('form');
+
+			if (btn.closest('.popover').length > 0 || btn.closest('.editableform').length > 0) {
+				return;
+			}
+
 			if (!form[0].checkValidity()) {
 				e.preventDefault();
 				const firstInvalid = form.find(':invalid')[0];
@@ -214,8 +219,7 @@ function bindSubmitButtonWithLoading() {
 					timeout: 5000,
 					processData: false,
 					contentType: false
-				})
-				.always(resetButton);
+				}).always(resetButton);
 			}
 		});
 }
