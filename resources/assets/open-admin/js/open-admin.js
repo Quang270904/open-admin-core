@@ -394,8 +394,8 @@ admin.pages = {
     init: function () {
         clickEvent();
         bindSubmitButtonWithLoading();
-        handleSidebar();
-        changeText();
+        // handleSidebar();
+        // changeText();
         this.setTitle();
         admin.menu.setActivePage(window.location.href);
         admin.grid.init();
@@ -421,7 +421,7 @@ admin.pages = {
         });
 
         // tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"].enable-tooltip'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
@@ -443,6 +443,9 @@ toastr.options = {
 };
 
 $.pjax.defaults.maxCacheLength = 0;
+$(document).on('pjax:timeout', function (event) {
+    event.preventDefault();
+})
 
 $(function () {
     $('.sidebar-menu li:not(.treeview) > a').on('click', function () {
@@ -539,21 +542,24 @@ $(document).on('submit', 'form[pjax-container]', function (event) {
 });
 
 $(document).on('pjax:end', function () {
-    bindSubmitButtonWithLoading();
-    changeText();
-    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+    // bindSubmitButtonWithLoading();
+    // changeText();
+    document.querySelectorAll('[data-bs-toggle="tooltip"].enable-tooltip').forEach(function (el) {
         new bootstrap.Tooltip(el, {
             title: el.getAttribute('data-bs-original-title') || el.getAttribute('title')
         });
     });
 
 });
-
 $(document).on('pjax:send', function (xhr) {
     if (xhr.relatedTarget && xhr.relatedTarget.tagName && xhr.relatedTarget.tagName.toLowerCase() === 'form') {
-        $submit_btn = $('form[pjax-container] :submit');
-        if ($submit_btn) {
-            $submit_btn.button('loading')
+        const $form = $(xhr.relatedTarget);        
+        const $submit_btn = $form.find(':submit');
+
+        if ($submit_btn.length) {
+            $submit_btn.data('original-text', $submit_btn.html());
+            $submit_btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>loading...');
+            $submit_btn.prop('disabled', true);
         }
     }
     NProgress.start();
@@ -561,9 +567,13 @@ $(document).on('pjax:send', function (xhr) {
 
 $(document).on('pjax:complete', function (xhr) {
     if (xhr.relatedTarget && xhr.relatedTarget.tagName && xhr.relatedTarget.tagName.toLowerCase() === 'form') {
-        $submit_btn = $('form[pjax-container] :submit');
-        if ($submit_btn) {
-            $submit_btn.button('reset')
+        const $form = $(xhr.relatedTarget);
+        const $submit_btn = $form.find(':submit');
+
+        if ($submit_btn.length) {
+            const originalText = $submit_btn.data('original-text');
+            $submit_btn.html(originalText || '<i class="fa fa-search"></i>');
+            $submit_btn.prop('disabled', false);
         }
     }
     NProgress.done();
