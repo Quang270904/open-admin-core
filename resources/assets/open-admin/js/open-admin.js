@@ -538,18 +538,20 @@ $(function () {
 })(jQuery);
 
 $(document).on('submit', 'form[pjax-container]', function (event) {
-    $.pjax.submit(event, '#pjax-container')
+  const container = '#pjax-container';
+
+  $.pjax.submit(event, container, { timeout: 5000 });
+
+  $(container).one('pjax:success', function () {
+    $(this).find('select').each(function () {
+      if ($(this).data('select2')) {
+        $(this).select2('destroy');
+      }
+      $(this).select2({ width: '100%' });
+    });
+  });
 });
 
-$(document).on('pjax:success', function (e) {
-    const container = '#pjax-container';
-    $(container).find('select').each(function () {
-        if ($(this).data('select2')) {
-            $(this).select2('destroy');
-        }
-        $(this).select2({ width: '100%' });
-    });
-});
 
 $(document).on('pjax:end', function () {
     // bindSubmitButtonWithLoading();
