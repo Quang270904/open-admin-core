@@ -540,7 +540,7 @@ $(function () {
 $(document).on('submit', 'form[pjax-container]', function (event) {
   const container = '#pjax-container';
 
-  $.pjax.submit(event, container, { timeout: 5000 });
+  $.pjax.submit(event, container);
 
   $(container).one('pjax:success', function () {
     $(this).find('select').each(function () {
