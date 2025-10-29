@@ -95,12 +95,12 @@ class Pjax
         $input = $response->getContent();
 
         $title = $this->makeFromBetween($input, '<title>', '</title>');
-        $title = !empty($title) ? '<title>'.$title.'</title>' : '';
+        $title = !empty($title) ? '<title>' . $title . '</title>' : '';
 
         $content = $this->makeFromBetween($input, '<!--start-pjax-container-->', '<!--end-pjax-container-->');
         $content = $this->decodeUtf8HtmlEntities($content);
 
-        /*
+
         if (empty($content)) {
             // try dom-crwawler
             // this is much slower though
@@ -108,14 +108,16 @@ class Pjax
             $title = $this->makeTitle($crawler);
             $content = $this->fetchContents($crawler, $container);
         }
-        */
 
+        /*
         if (empty($content)) {
             abort(422);
         }
+        */
+
 
         $response->setContent(
-            $title.$content
+            $title . $content
         );
 
         return $this;
