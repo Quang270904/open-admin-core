@@ -43,7 +43,7 @@ admin.form = {
 
     submit: function (form, result_function) {
         let method = form.getAttribute('method').toLowerCase();
-        let url = String(form.getAttribute('action')).split('?')[0];
+        let url = String(form.getAttribute('action'));
         let obj = {};
         tinymce.triggerSave();
         this.beforeSave();

@@ -559,6 +559,8 @@ $(document).on('pjax:send', function (xhr) {
         if ($submit_btn.length) {
             $submit_btn.data('original-text', $submit_btn.html());
             $submit_btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>loading...');
+            $submit_btn.css('display', 'inline-flex');
+            $submit_btn.css('align-items', 'center');
             $submit_btn.prop('disabled', true);
         }
     }

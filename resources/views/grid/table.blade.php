@@ -59,8 +59,8 @@
 
     {!! $grid->renderFooter() !!}
 
-    <divm style="display: flex" class="navbar navbar-light bg-white py-3 px-4">
+    <div style="display: flex" class="navbar navbar-light bg-white py-3 px-4">
         {!! $grid->paginator() !!}
-    </divm>
+    </div>
     <!-- /.box-body -->
 </div>
