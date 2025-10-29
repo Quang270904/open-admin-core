@@ -541,6 +541,16 @@ $(document).on('submit', 'form[pjax-container]', function (event) {
     $.pjax.submit(event, '#pjax-container')
 });
 
+$(document).on('pjax:success', function (e) {
+    const container = '#pjax-container';
+    $(container).find('select').each(function () {
+        if ($(this).data('select2')) {
+            $(this).select2('destroy');
+        }
+        $(this).select2({ width: '100%' });
+    });
+});
+
 $(document).on('pjax:end', function () {
     // bindSubmitButtonWithLoading();
     // changeText();
