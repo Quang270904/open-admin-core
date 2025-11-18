@@ -1,10 +1,10 @@
 <?php
 
-namespace Encore\Admin\Widgets\Grid\Concerns;
+namespace OpenAdminCore\Admin\Widgets\Grid\Concerns;
 
-use Encore\Admin\Grid\Model;
-use Encore\Admin\Widgets\Grid\Column;
-use Encore\Admin\Widgets\Grid\Tools;
+use OpenAdminCore\Admin\Grid\Model;
+use OpenAdminCore\Admin\Widgets\Grid\Column;
+use OpenAdminCore\Admin\Widgets\Grid\Tools;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 

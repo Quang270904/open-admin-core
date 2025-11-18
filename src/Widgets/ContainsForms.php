@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Widgets;
+namespace OpenAdminCore\Admin\Widgets;
 
 trait ContainsForms
 {
@@ -37,18 +37,16 @@ trait ContainsForms
 
         foreach ($forms as $name => $class) {
             if (!is_subclass_of($class, Form::class)) {
-                admin_error("Class [{$class}] must be a sub-class of [Encore\Admin\Widgets\Form].");
+                admin_error("Class [{$class}] must be a sub-class of [OpenAdminCore\Admin\Widgets\Form].");
                 continue;
             }
 
             /** @var Form $form */
             $form = app()->make($class);
 
-            if ($name == $active) {
-                $this->add($form->title, $form->unbox(), true);
-            } else {
-                $this->addLink($form->title, $this->getTabUrl($name));
-            }
+            $setActive = ($name == $active);
+            $this->add($form->title(), $form->unbox(), $setActive);
+
         }
 
         return $this;

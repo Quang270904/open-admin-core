@@ -1,9 +1,10 @@
 <?php
 
-namespace Encore\Admin\Grid\Displayers;
+namespace OpenAdminCore\Admin\Grid\Displayers;
 
-use Encore\Admin\Grid;
-use Encore\Admin\Grid\Column;
+use Illuminate\Database\Eloquent\Model;
+use OpenAdminCore\Admin\Grid;
+use OpenAdminCore\Admin\Grid\Column;
 
 abstract class AbstractDisplayer
 {
@@ -13,7 +14,7 @@ abstract class AbstractDisplayer
     protected $grid;
 
     /**
-     * @var Column
+     * @var Model
      */
     protected $column;
 
@@ -76,6 +77,16 @@ abstract class AbstractDisplayer
     {
         return $this->row->{$this->grid->getKeyName()};
     }
+    
+    /**
+     * @param mixed $key
+     *
+     * @return mixed
+     */
+    public function getAttribute($key)
+    {
+        return $this->row->getAttribute($key);
+    }
 
     /**
      * Get url path of current resource.
@@ -85,6 +96,36 @@ abstract class AbstractDisplayer
     public function getResource()
     {
         return $this->grid->resource();
+    }
+    
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getColumn()->getName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassName()
+    {
+        return $this->getColumn()->getClassName();
+    }
+
+    /**
+     * `foo.bar.baz` => `foo[bar][baz]`.
+     *
+     * @return string
+     */
+    protected function getPayloadName($name = '')
+    {
+        $keys = collect(explode('.', $name ?: $this->getName()));
+
+        return $keys->shift().$keys->reduce(function ($carry, $val) {
+            return $carry."[$val]";
+        });
     }
 
     /**

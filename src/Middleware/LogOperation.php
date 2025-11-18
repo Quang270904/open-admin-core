@@ -1,11 +1,11 @@
 <?php
 
-namespace Encore\Admin\Middleware;
+namespace OpenAdminCore\Admin\Middleware;
 
-use Encore\Admin\Auth\Database\OperationLog as OperationLogModel;
-use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use OpenAdminCore\Admin\Auth\Database\OperationLog as OperationLogModel;
+use OpenAdminCore\Admin\Facades\Admin;
 
 class LogOperation
 {
@@ -20,12 +20,13 @@ class LogOperation
     public function handle(Request $request, \Closure $next)
     {
         if ($this->shouldLogOperation($request)) {
+            $setProxy = $request->setTrustedProxies(request()->getClientIps(), \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR);
             $log = [
                 'user_id' => Admin::user()->id,
                 'path'    => substr($request->path(), 0, 255),
                 'method'  => $request->method(),
                 'ip'      => $request->getClientIp(),
-                'input'   => json_encode($request->input()),
+                'input'   => json_encode($this->filterInput((array) $request->input())),
             ];
 
             try {
@@ -36,6 +37,18 @@ class LogOperation
         }
 
         return $next($request);
+    }
+
+    protected function filterInput($input)
+    {
+        $filter = config('admin.operation_log.filter_input', []);
+        foreach ($filter as $key => $value) {
+            if (isset($input[$key])) {
+                $input[$key] = $value;
+            }
+        }
+
+        return $input;
     }
 
     /**

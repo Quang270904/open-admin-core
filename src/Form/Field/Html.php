@@ -1,9 +1,9 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form\Field;
 use Illuminate\Support\Arr;
+use OpenAdminCore\Admin\Form\Field;
 
 class Html extends Field
 {

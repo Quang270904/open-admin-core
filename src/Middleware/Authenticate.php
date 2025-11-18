@@ -1,9 +1,9 @@
 <?php
 
-namespace Encore\Admin\Middleware;
+namespace OpenAdminCore\Admin\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
+use OpenAdminCore\Admin\Facades\Admin;
 
 class Authenticate
 {
@@ -17,10 +17,12 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
+        \config(['auth.defaults.guard' => 'admin']);
+
         $redirectTo = admin_base_path(config('admin.auth.redirect_to', 'auth/login'));
 
-        if (Auth::guard('admin')->guest() && !$this->shouldPassThrough($request)) {
-            return redirect()->guest($redirectTo);
+        if (Admin::guard()->guest() && !$this->shouldPassThrough($request)) {
+            return redirect()->to($redirectTo);
         }
 
         return $next($request);
@@ -35,10 +37,16 @@ class Authenticate
      */
     protected function shouldPassThrough($request)
     {
-        $excepts = config('admin.auth.excepts', [
-            'auth/login',
-            'auth/logout',
+        // The following routes do not authenticate the login
+        $excepts = config('admin.auth.excepts', []);
+
+        array_delete($excepts, [
+            '_handle_action_',
+            '_handle_form_',
+            '_handle_selectable_',
+            '_handle_renderable_',
         ]);
+
         /** @phpstan-ignore-next-line Unable to resolve the template type TKey in call to function collect */
         return collect($excepts)
             ->map('admin_base_path')

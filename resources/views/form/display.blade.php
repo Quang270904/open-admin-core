@@ -1,6 +1,6 @@
 <div class="{{$viewClass['form-group']}}">
-    <label class="{{$viewClass['label']}} control-label text-lg-end pt-2" style="padding-top:10px;">{{$label}}</label>
-    <div class="{{$viewClass['field']}} pt-2">
+    <label class="{{$viewClass['label']}} control-label text-lg-end" style="padding-top:10px;">{{$label}}</label>
+    <div class="{{$viewClass['field']}}">
         <div class="no-margin">
             <!-- /.box-header -->
             <div class="box-body {{$displayClass ?? null}}" style="padding-left:0; padding-bottom:0;">

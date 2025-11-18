@@ -145,7 +145,6 @@
                             secondInput.parentNode.removeChild(secondInput);
                 },
                 onValueUpdate: function (selDates) {
-
                     var _a, _b, _c;
                     if (!secondInput)
                         return;
@@ -153,12 +152,18 @@
                         !_prevDates || selDates.length >= _prevDates.length
                             ? __spreadArrays(selDates) : _prevDates;
                     if (_prevDates.length > selDates.length) {
-
                         var newSelectedDate = selDates[0];
                         var newDates = _secondInputFocused
                             ? [_prevDates[0], newSelectedDate]
                             : [newSelectedDate, _prevDates[1]];
-
+                        if (newDates[0].getTime() > newDates[1].getTime()) {
+                            if (_secondInputFocused) {
+                                newDates[0] = newDates[1];
+                            }
+                            else {
+                                newDates[1] = newDates[0];
+                            }
+                        }
                         fp.setDate(newDates, false);
                         _prevDates = __spreadArrays(newDates);
                     }

@@ -9,8 +9,8 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    @if(!is_null($favicon = Admin::favicon()))
-        <link rel="shortcut icon" href="{{$favicon}}">
+    @if (!is_null($favicon = Admin::favicon()))
+        <link rel="shortcut icon" href="{{ $favicon }}">
     @endif
 
     {!! Admin::css() !!}
@@ -18,9 +18,12 @@
     <script src="{{ Admin::jQuery() }}"></script>
     {!! Admin::headerJs() !!}
 
+    {!! Admin::js_trans() !!}
+
+
 </head>
 
-<body class="hold-transition {{config('admin.skin')}} {{join(' ', config('admin.layout'))}}">
+<body class="hold-transition {{ config('admin.skin') }} {{ join(' ', config('admin.layout')) }}">
     <div class="wrapper">
 
         @include('admin::partials.header')
@@ -29,16 +32,18 @@
 
         <div class="content-wrapper" id="main">
             <div id="pjax-container">
+                <!--start-pjax-container-->
                 {!! Admin::style() !!}
                 <div id="app">
                     @yield('content')
                 </div>
+                {{-- {!! Admin::html() !!} --}}
                 {!! Admin::script() !!}
+                <!--end-pjax-container-->
             </div>
 
         </div>
         @include('admin::partials.footer')
-
 
     </div>
 
@@ -47,7 +52,7 @@
     <button id="totop" title="Go to top" style="display: none;"><i class="fa fa-chevron-up"></i></button>
 
     <script>
-        function LA() { }
+        function LA() {}
         LA.token = "{{ csrf_token() }}";
     </script>
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Encore\Admin;
+namespace OpenAdminCore\Admin;
 
 use Closure;
-use Encore\Admin\Auth\Database\Menu;
-use Encore\Admin\Traits\ModelTree;
-use Encore\Admin\Tree\Tools;
+use OpenAdminCore\Admin\Auth\Database\Menu;
+use OpenAdminCore\Admin\Traits\ModelTree;
+use OpenAdminCore\Admin\Tree\Tools;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -318,83 +318,14 @@ class Tree implements Renderable
         ];
 
         $nestableOptions = json_encode($this->nestableOptions);
+        $url = url($this->path);
 
         $useNestable = $this->useNestable ? 'true' : 'false';
         return <<<SCRIPT
 
         if({$useNestable}){
-            $('#{$this->elementId}').nestable($nestableOptions);
+admin.tree.init('{$this->elementId}', {$nestableOptions}, '{$url}');
         }
-
-        $('.tree_branch_delete').click(function() {
-            var id = $(this).data('id');
-            swal({
-                title: "{$trans['delete_confirm']}",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "{$trans['confirm']}",
-                showLoaderOnConfirm: true,
-                allowOutsideClick: false,
-                cancelButtonText: "{$trans['cancel']}",
-                preConfirm: function() {
-                    $('.swal2-cancel').hide();
-                    return new Promise(function(resolve) {
-                        $.ajax({
-                            method: 'post',
-                            url: '{$this->path}/' + id,
-                            data: {
-                                _method:'delete',
-                                _token:LA.token,
-                            },
-                            success: function (data) {
-                                $.pjax.reload('#pjax-container');
-                                toastr.success('{$trans['delete_succeeded']}');
-                                resolve(data);
-                            }
-                        });
-                    });
-                }
-            }).then(function(result) {
-                var data = result.value;
-                if (typeof data === 'object') {
-                    if (data.status) {
-                        swal(data.message, '', 'success');
-                    } else {
-                        swal(data.message, '', 'error');
-                    }
-                }
-            });
-        });
-
-        $('.{$this->elementId}-save').click(function () {
-            var serialize = $('#{$this->elementId}').nestable('serialize');
-
-            $.post('{$this->path}', {
-                _token: LA.token,
-                _order: JSON.stringify(serialize)
-            },
-            function(data){
-                $.pjax.reload('#pjax-container');
-                toastr.success('{$trans['save_succeeded']}');
-            });
-        });
-
-        $('.{$this->elementId}-refresh').click(function () {
-            $.pjax.reload('#pjax-container');
-            toastr.success('{$trans['refresh_succeeded']}');
-        });
-
-        $('.{$this->elementId}-tree-tools').on('click', function(e){
-            var action = $(this).data('action');
-            if (action === 'expand') {
-                $('.dd').nestable('expandAll');
-            }
-            if (action === 'collapse') {
-                $('.dd').nestable('collapseAll');
-            }
-        });
-
 
 SCRIPT;
     }

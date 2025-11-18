@@ -1,9 +1,9 @@
 <?php
 
-namespace Encore\Admin\Show;
+namespace OpenAdminCore\Admin\Show;
 
-use Encore\Admin\Grid;
-use Encore\Admin\Show;
+use OpenAdminCore\Admin\Grid;
+use OpenAdminCore\Admin\Show;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -122,7 +122,8 @@ class Relation extends Field
 
             $renderable->setName($this->name)
                 ->setTitle($this->title)
-                ->setRelation($relation);
+                ->setRelation($relation)
+                ->fixedFooter(false);
         }
 
         return $renderable->render();

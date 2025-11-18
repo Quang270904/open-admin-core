@@ -1,8 +1,8 @@
 <?php
 
-use Encore\Admin\Auth\Database\Administrator;
-use Encore\Admin\Auth\Database\Permission;
-use Encore\Admin\Auth\Database\Role;
+use OpenAdminCore\Admin\Auth\Database\Administrator;
+use OpenAdminCore\Admin\Auth\Database\Permission;
+use OpenAdminCore\Admin\Auth\Database\Role;
 
 class PermissionsTest extends TestCase
 {

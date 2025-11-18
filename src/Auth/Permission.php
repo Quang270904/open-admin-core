@@ -1,14 +1,12 @@
 <?php
 
-namespace Encore\Admin\Auth;
+namespace OpenAdminCore\Admin\Auth;
 
-use Encore\Admin\Facades\Admin;
-use Encore\Admin\Middleware\Pjax;
-use Illuminate\Support\Facades\Auth;
+use OpenAdminCore\Admin\Facades\Admin;
+use OpenAdminCore\Admin\Middleware\Pjax;
 
 class Permission
 {
-
     /**
      * Check permission.
      *
@@ -29,7 +27,7 @@ class Permission
             return;
         }
 
-        if (Auth::guard('admin')->user()->cannot($permission)) {
+        if (Admin::user()->cannot($permission)) {
             static::error();
         }
     }
@@ -46,8 +44,7 @@ class Permission
             return true;
         }
 
-        // @phpstan-ignore-next-line inRoles undefined
-        if (!Auth::guard('admin')->user()->inRoles($roles)) {
+        if (!Admin::user()->inRoles($roles)) {
             static::error();
         }
     }
@@ -74,8 +71,7 @@ class Permission
             return true;
         }
 
-        // @phpstan-ignore-next-line inRoles undefined
-        if (Auth::guard('admin')->user()->inRoles($roles)) {
+        if (Admin::user()->inRoles($roles)) {
             static::error();
         }
     }
@@ -99,7 +95,7 @@ class Permission
             abort(403, $message);
         }
 
-        /** @phpstan-ignore-next-line Parameter #1 $content of function response expects array|Illuminate\Contracts\View\View|string|null, Encore\Admin\Layout\Content given. */
+        /** @phpstan-ignore-next-line Parameter #1 $content of function response expects array|Illuminate\Contracts\View\View|string|null, OpenAdminCore\Admin\Layout\Content given. */
         $response = response(Admin::content()->withError($message));
 
         Pjax::respond($response);
@@ -112,7 +108,6 @@ class Permission
      */
     public static function isAdministrator()
     {
-        // @phpstan-ignore-next-line isRole undefined
-        return Auth::guard('admin')->user()->isRole('administrator');
+        return Admin::user()->isRole('administrator');
     }
 }

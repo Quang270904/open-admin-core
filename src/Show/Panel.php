@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Show;
+namespace OpenAdminCore\Admin\Show;
 
-use Encore\Admin\Show;
+use OpenAdminCore\Admin\Show;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Collection;
 

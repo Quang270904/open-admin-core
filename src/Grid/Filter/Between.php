@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Grid\Filter;
+namespace OpenAdminCore\Admin\Grid\Filter;
 
-use Encore\Admin\Admin;
+use OpenAdminCore\Admin\Admin;
 use Illuminate\Support\Arr;
 
 class Between extends AbstractFilter
@@ -29,8 +29,8 @@ class Between extends AbstractFilter
 
     /**
      * Format two field names of this filter.
-     * @phpstan-ignore-next-line Return type (array<string, string>) of method Encore\Admin\Grid\Filter\Between::formatName() should be compatible with return type (string|null) of method
-     * Encore\Admin\Grid\Filter\AbstractFilter::formatName()
+     * @phpstan-ignore-next-line Return type (array<string, string>) of method OpenAdminCore\Admin\Grid\Filter\Between::formatName() should be compatible with return type (string|null) of method
+     * OpenAdminCore\Admin\Grid\Filter\AbstractFilter::formatName()
      * @param string $column
      *
      * @return array<string, string>
@@ -61,6 +61,10 @@ class Between extends AbstractFilter
      */
     public function condition($inputs)
     {
+        if ($this->ignore) {
+            return;
+        }
+
         if (!Arr::has($inputs, $this->column)) {
             return;
         }

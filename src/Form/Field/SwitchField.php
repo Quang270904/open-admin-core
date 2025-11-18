@@ -1,9 +1,9 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form\Field;
-use Encore\Admin\Validator\HasOptionRule;
+use OpenAdminCore\Admin\Form\Field;
+use OpenAdminCore\Admin\Validator\HasOptionRule;
 use Illuminate\Support\Arr;
 
 class SwitchField extends Field
@@ -87,8 +87,12 @@ class SwitchField extends Field
      */
     public function prepare($value)
     {
-        if (isset($this->states[$value])) {
-            return $this->states[$value]['value'];
+        if ($value == 'on' || $value == 1) {
+            $value = 1;
+        } elseif ($value == 'off' || $value === '0') {
+            $value = 0;
+        } else {
+            $value = false; // nothting was set so do: false to ignore value from saving
         }
 
         return $value;

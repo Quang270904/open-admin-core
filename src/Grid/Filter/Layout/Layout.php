@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Grid\Filter\Layout;
+namespace OpenAdminCore\Admin\Grid\Filter\Layout;
 
-use Encore\Admin\Grid\Filter;
+use OpenAdminCore\Admin\Grid\Filter;
 use Illuminate\Support\Collection;
 
 class Layout

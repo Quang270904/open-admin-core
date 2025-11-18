@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Grid\Tools;
+namespace OpenAdminCore\Admin\Grid\Tools;
 
-use Encore\Admin\Grid;
+use OpenAdminCore\Admin\Grid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Request;

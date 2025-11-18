@@ -1,13 +1,17 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form\Field;
 use Illuminate\Contracts\Support\Arrayable;
-use Encore\Admin\Validator\HasOptionRule;
+use OpenAdminCore\Admin\Form\Field;
+use OpenAdminCore\Admin\Form\Field\Traits\CanCascadeFields;
+use OpenAdminCore\Admin\Validator\HasOptionRule;
 
 class Radio extends Field
 {
+    use CanCascadeFields;
+
+    protected $stacked = false;
     /**
      * @var bool
      */
@@ -23,6 +27,7 @@ class Radio extends Field
     /**
      * @var array<string>
      */
+    protected $cascadeEvent = 'change';
     protected static $js = [
         '/vendor/open-admin/AdminLTE/plugins/iCheck/icheck.min.js',
     ];
@@ -91,7 +96,7 @@ class Radio extends Field
      */
     public function inline()
     {
-        $this->inline = true;
+        $this->stacked = false;
 
         return $this;
     }
@@ -103,7 +108,7 @@ class Radio extends Field
      */
     public function stacked()
     {
-        $this->inline = false;
+        $this->stacked = true;
 
         return $this;
     }
@@ -127,7 +132,9 @@ class Radio extends Field
     {
         $this->script = "$('{$this->getElementClassSelector()}').iCheck({radioClass:'iradio_minimal-blue'});";
 
-        $this->addVariables(['options' => $this->options, 'checked' => $this->checked, 'inline' => $this->inline]);
+        $this->addCascadeScript();
+
+        $this->addVariables(['options' => $this->options, 'checked' => $this->checked, 'stacked' => $this->stacked]);
 
         return parent::render();
     }

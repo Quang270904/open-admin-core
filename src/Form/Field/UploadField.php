@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form;
+use OpenAdminCore\Admin\Form;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -161,6 +161,10 @@ trait UploadField
             'showUpload'           => false,
             'showCancel'           => false,
             'dropZoneEnabled'      => false,
+            'preferIconicPreview'  => true,
+            'alwaysPreviewFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'],
+            'allowedPreviewTypes'  => ['image'],
+            'previewFileIcon' => '<i class="fa fa-file"></i>',
             'previewFileIconSettings' => array(
                 'txt' => '<i class="fa fa-file text-primary"></i>',
                 'xml' => '<i class="fa fa-file text-primary"></i>',

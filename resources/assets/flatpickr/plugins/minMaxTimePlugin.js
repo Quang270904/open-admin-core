@@ -259,6 +259,13 @@
           date1.getSeconds() -
           date2.getSeconds());
   }
+  var calculateSecondsSinceMidnight = function (hours, minutes, seconds) {
+      return hours * 3600 + minutes * 60 + seconds;
+  };
+  var parseSeconds = function (secondsSinceMidnight) {
+      var hours = Math.floor(secondsSinceMidnight / 3600), minutes = (secondsSinceMidnight - hours * 3600) / 60;
+      return [hours, minutes, secondsSinceMidnight - hours * 3600 - minutes * 60];
+  };
 
   function minMaxTimePlugin(config) {
       if (config === void 0) { config = {}; }
@@ -278,46 +285,18 @@
       }
       return function (fp) {
           return {
-
               onReady: function () {
-
-                this.setMinMaxTime = function (minTime,maxTime){
-                    state.defaults = {
-                        minTime: new Date("2000-01-01 "+minTime),
-                        maxTime: new Date("2000-01-01 "+maxTime)
-                    };
-                  }
-
-                  this.setMinTime = function (minTime){
-                    state.defaults = {
-                        minTime: new Date("2000-01-01 "+minTime)
-                    };
-                  }
-
-                  this.setMaxTime = function (maxTime){
-                    state.defaults = {
-                        maxTime: new Date("2000-01-01 "+maxTime)
-                    };
-                  }
-
-                  this.config.minTime = config.minTime;
-                  this.config.maxTime = config.maxTime;
-
                   state.formatDate = this.formatDate;
                   state.defaults = {
                       minTime: this.config.minTime && state.formatDate(this.config.minTime, "H:i"),
                       maxTime: this.config.maxTime && state.formatDate(this.config.maxTime, "H:i"),
                   };
-
                   fp.loadedPlugins.push("minMaxTime");
               },
               onChange: function () {
-
                   var latest = this.latestSelectedDateObj;
                   var matchingTimeLimit = latest && findDateTimeLimit(latest);
-
                   if (latest && matchingTimeLimit !== undefined) {
-
                       this.set(matchingTimeLimit);
                       fp.config.minTime.setFullYear(latest.getFullYear());
                       fp.config.maxTime.setFullYear(latest.getFullYear());
@@ -325,14 +304,25 @@
                       fp.config.maxTime.setMonth(latest.getMonth());
                       fp.config.minTime.setDate(latest.getDate());
                       fp.config.maxTime.setDate(latest.getDate());
-                      if (compareDates(latest, fp.config.maxTime, false) > 0) {
-                          fp.setDate(new Date(latest.getTime()).setHours(fp.config.maxTime.getHours(), fp.config.maxTime.getMinutes(), fp.config.maxTime.getSeconds(), fp.config.maxTime.getMilliseconds()), false);
+                      if (fp.config.minTime > fp.config.maxTime) {
+                          var minBound = calculateSecondsSinceMidnight(fp.config.minTime.getHours(), fp.config.minTime.getMinutes(), fp.config.minTime.getSeconds());
+                          var maxBound = calculateSecondsSinceMidnight(fp.config.maxTime.getHours(), fp.config.maxTime.getMinutes(), fp.config.maxTime.getSeconds());
+                          var currentTime = calculateSecondsSinceMidnight(latest.getHours(), latest.getMinutes(), latest.getSeconds());
+                          if (currentTime > maxBound && currentTime < minBound) {
+                              var result = parseSeconds(minBound);
+                              fp.setDate(new Date(latest.getTime()).setHours(result[0], result[1], result[2]), false);
+                          }
                       }
-                      else if (compareDates(latest, fp.config.minTime, false) < 0)
-                          fp.setDate(new Date(latest.getTime()).setHours(fp.config.minTime.getHours(), fp.config.minTime.getMinutes(), fp.config.minTime.getSeconds(), fp.config.minTime.getMilliseconds()), false);
+                      else {
+                          if (compareDates(latest, fp.config.maxTime, false) > 0) {
+                              fp.setDate(new Date(latest.getTime()).setHours(fp.config.maxTime.getHours(), fp.config.maxTime.getMinutes(), fp.config.maxTime.getSeconds(), fp.config.maxTime.getMilliseconds()), false);
+                          }
+                          else if (compareDates(latest, fp.config.minTime, false) < 0) {
+                              fp.setDate(new Date(latest.getTime()).setHours(fp.config.minTime.getHours(), fp.config.minTime.getMinutes(), fp.config.minTime.getSeconds(), fp.config.minTime.getMilliseconds()), false);
+                          }
+                      }
                   }
                   else {
-
                       var newMinMax = state.defaults || {
                           minTime: undefined,
                           maxTime: undefined,
@@ -341,7 +331,6 @@
                       if (!latest)
                           return;
                       var _a = fp.config, minTime = _a.minTime, maxTime = _a.maxTime;
-
                       if (minTime && compareTimes(latest, minTime) < 0) {
                           fp.setDate(new Date(latest.getTime()).setHours(minTime.getHours(), minTime.getMinutes(), minTime.getSeconds(), minTime.getMilliseconds()), false);
                       }

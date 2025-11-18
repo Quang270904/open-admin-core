@@ -11,7 +11,14 @@ class BelongsTo extends Select
     protected $relation_prefix = 'belongsto-';
     protected $relation_type = 'one';
 
-    protected function getOptions()
+    /**
+     * Get options.
+     * *Not set $this->options*
+     * @param mixed|null $value
+     *
+     * @return array<mixed>
+     */
+    public function getOptions($value = null) : array
     {
         $options = [];
 

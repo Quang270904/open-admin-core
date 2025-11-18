@@ -16,7 +16,7 @@
         </div>
         <!-- /.box-body -->
 
-        <div class="box-footer">
+        <div class="box-footer" style="padding: 10px;">
             <div class="row">
                 <div class="col-md-{{ $layout->columns()->first()->width() }} row">
                     <div class="col-md-2"></div>

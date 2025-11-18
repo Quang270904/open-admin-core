@@ -1,31 +1,47 @@
 <?php
 
-namespace Encore\Admin\Widgets\Navbar;
+namespace OpenAdminCore\Admin\Widgets\Navbar;
 
-use Encore\Admin\Admin;
+use OpenAdminCore\Admin\Admin;
 use Illuminate\Contracts\Support\Renderable;
 
 class RefreshButton implements Renderable
 {
     public function render()
-    {
-        $message = __('admin.refresh_succeeded');
+{
+    $message = json_encode(__('admin.refresh_succeeded'));
+    $script = <<<SCRIPT
+    const message = {$message};
+    /**
+     * Show a success message using Toastr.
+     */
+    function showToastrSuccess() {
+        toastr.success(message, '', {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-top-center",
+            timeOut: 4000,
+            showMethod: 'slideDown'
+        });
+    }
 
-        $script = <<<SCRIPT
-$('.refresh-button').off('click').on('click', function() {
-    $.admin.reload();
-    $.admin.toastr.success('{$message}', '', {positionClass:"toast-top-center"});
-});
+    $(function() {
+        $('.container-refresh').off('click').on('click', function() {
+            $.admin.reload();
+            showToastrSuccess();
+        });
+    });
 SCRIPT;
 
-        Admin::script($script);
+    Admin::script($script);
 
-        return <<<'EOT'
+    return <<<'EOT'
 <li>
-    <a href="javascript:void(0);" class="refresh-button d-none d-md-block" style="padding:15.5px 11.5px;">
+    <a href="javascript:void(0);" class="container-refresh hidden-xs">
       <i class="fa fa-refresh"></i>
     </a>
 </li>
 EOT;
-    }
+}
+
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Grid\Tools;
+namespace OpenAdminCore\Admin\Grid\Tools;
 
-use Encore\Admin\Grid\Column;
+use OpenAdminCore\Admin\Grid\Column;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;

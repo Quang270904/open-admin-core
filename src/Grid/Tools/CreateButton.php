@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Grid\Tools;
+namespace OpenAdminCore\Admin\Grid\Tools;
 
-use Encore\Admin\Grid;
+use OpenAdminCore\Admin\Grid;
 
 class CreateButton extends AbstractTool
 {
@@ -37,7 +37,7 @@ class CreateButton extends AbstractTool
         return <<<EOT
 
 <div class="btn-group pull-right" style="margin-right: 10px">
-    <a href="{$this->grid->getCreateUrl()}" class="btn btn-sm btn-success p-2" title="{$new}">
+    <a href="{$this->grid->getCreateUrl()}" class="btn btn-sm btn-success" title="{$new}">
         <i class="fa fa-plus"></i><span class="d-none d-md-inline">&nbsp;&nbsp;{$new}</span>
     </a>
 </div>

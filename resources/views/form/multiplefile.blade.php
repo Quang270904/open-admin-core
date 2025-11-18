@@ -2,7 +2,7 @@
 
     <label for="{{$id}}" class="{{$viewClass['label']}} control-label text-lg-end pt-2">{{$label}}</label>
 
-    <div class="{{$viewClass['field']}} pe-4">
+    <div class="{{$viewClass['field']}}">
 
         @include('admin::form.error')
 

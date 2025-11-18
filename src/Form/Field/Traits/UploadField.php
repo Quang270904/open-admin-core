@@ -13,21 +13,25 @@ trait UploadField
     /**
      * Upload directory.
      *
-     * @var string
+     * @var \Closure|string|null
      */
     protected $directory = '';
 
     /**
      * File name.
-     *
-     * @var null
+     * @var string|null|mixed
      */
     protected $name = null;
 
     /**
+     * callable name.
+     * @var callable|null
+     */
+    protected $callableName = null;
+
+    /**
      * Storage instance.
-     *
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var string|FilesystemAdapter
      */
     protected $storage = '';
 
@@ -43,7 +47,7 @@ trait UploadField
      *
      * @var bool
      */
-    protected $useSequenceName = true;
+    protected $useSequenceName = false;
 
     /**
      * Retain file when delete record from DB.
@@ -60,7 +64,7 @@ trait UploadField
     /**
      * Configuration for setting up file actions for newly selected file thumbnails in the preview window.
      *
-     * @var array
+     * @var array<string,bool>
      */
     protected $fileActionSettings = [
         'showRemove' => false,
@@ -70,12 +74,26 @@ trait UploadField
     /**
      * Controls the storage permission. Could be 'private' or 'public'.
      *
-     * @var string
+     * @var string|null
      */
     protected $storagePermission;
 
     /**
-     * @var array
+     * filetype
+     *
+     * @var string|null
+     */
+    protected $filetype;
+
+    /**
+     * Get file from tmp. Almost use preview.
+     *
+     * @var \Closure|null
+     */
+    protected $getTmp = null;
+
+    /**
+     * @var array<string, string>
      */
     protected $fileTypes = [
         'image'      => '/^(gif|png|jpe?g|svg|webp|bpm|tiff)$/i',
@@ -128,6 +146,33 @@ trait UploadField
     }
 
     /**
+     * Set filetype
+     * @param string  $filetype
+     *
+     * @return $this
+     */
+    public function filetype($filetype)
+    {
+        $this->filetype = $filetype;
+
+        return $this;
+    }
+
+    /**
+     * Set get file from tmp. Almost use preview.
+     *
+     * @param  \Closure  $getTmp  Get file from tmp. Almost use preview.
+     *
+     * @return  self
+     */ 
+    public function getTmp(\Closure $getTmp)
+    {
+        $this->getTmp = $getTmp;
+
+        return $this;
+    }
+
+    /**
      * Set default options form image field.
      *
      * @return void
@@ -140,7 +185,43 @@ trait UploadField
             'download'       => true,
             'delete'         => true,
             'confirm_delete' => true,
+            'language'=> config('app.locale'),
+            'overwriteInitial'     => false,
+            'initialPreviewAsData' => true,
+            'browseLabel'          => trans('admin.browse'),
+            'cancelLabel'          => trans('admin.cancel'),
+            'showRemove'           => false,
+            'showUpload'           => false,
+            'showCancel'           => false,
+            'dropZoneEnabled'      => false,
+            'previewFileIconSettings' => array(
+                'txt' => '<i class="fa fa-file text-primary"></i>',
+                'xml' => '<i class="fa fa-file text-primary"></i>',
+                'pdf' => '<i class="fa fa-file-pdf-o text-primary"></i>',
+                'doc' => '<i class="fa fa-file-word-o text-primary"></i>',
+                'docx' => '<i class="fa fa-file-word-o text-primary"></i>',
+                'docm' => '<i class="fa fa-file-word-o text-primary"></i>',
+                'xls' => '<i class="fa fa-file-excel-o text-success"></i>',
+                'xlsx' => '<i class="fa fa-file-excel-o text-success"></i>',
+                'xlsm' => '<i class="fa fa-file-excel-o text-success"></i>',
+                'ppt' => '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                'pptx' => '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                'pptm' => '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                'zip' => '<i class="fa fa-file-archive-o text-muted"></i>',
+            ),
+            'deleteExtraData'      => [
+                $this->formatName($this->column) => static::FILE_DELETE_FLAG,
+                static::FILE_DELETE_FLAG         => '',
+                '_token'                         => csrf_token(),
+                '_method'                        => 'PUT',
+            ],
         ];
+
+        if ($this->form instanceof Form) {
+            $defaults['deleteUrl'] = $this->form->resource().'/'.$this->form->model()->getKey();
+        }
+
+        $defaults = array_merge($defaults, ['fileActionSettings' => $this->fileActionSettings]);
 
         $this->options($defaults);
     }
@@ -158,18 +239,26 @@ trait UploadField
     }
 
     /**
-     * @return array|bool
+     * @param string $file
+     *
+     * @return array<string>|bool
      */
     protected function guessPreviewType($file)
     {
-        $filetype = 'other';
-        $ext = strtok(strtolower(pathinfo($file, PATHINFO_EXTENSION)), '?');
-
-        foreach ($this->fileTypes as $type => $pattern) {
-            if (preg_match($pattern, $ext) === 1) {
-                $filetype = $type;
-                break;
-            }
+        $ext = '';
+        if(!is_null($this->filetype)){
+            $filetype = $this->filetype;
+        }
+        else{
+            $filetype = 'other';
+            $ext = strtok(strtolower(pathinfo($file, PATHINFO_EXTENSION)), '?');
+    
+            foreach ($this->fileTypes as $type => $pattern) {
+                if (preg_match($pattern, $ext) === 1) {
+                    $filetype = $type;
+                    break;
+                }
+            }    
         }
 
         $extra = [
@@ -201,7 +290,7 @@ trait UploadField
      */
     public function downloadable($downloadable = true)
     {
-        $this->options['download'] = $downloadable;
+        $this->downloadable = $downloadable;
 
         return $this;
     }
@@ -211,9 +300,9 @@ trait UploadField
      *
      * @return $this
      */
-    public function removable($removable = true)
+    public function removable()
     {
-        $this->options['delete'] = $removable;
+        $this->fileActionSettings['showRemove'] = true;
 
         return $this;
     }
@@ -232,6 +321,7 @@ trait UploadField
 
     /**
      * Indicates if the underlying field is retainable.
+     * @param bool $retainable
      *
      * @return $this
      */
@@ -251,7 +341,7 @@ trait UploadField
     /**
      * Set options for file-upload plugin.
      *
-     * @param array $options
+     * @param array<mixed> $options
      *
      * @return $this
      */
@@ -341,6 +431,21 @@ trait UploadField
     }
 
     /**
+     * Set callable name.
+     *
+     * @param callable|null $callableName
+     * @return $this
+     */
+    public function callableName($callableName)
+    {
+        if ($callableName) {
+            $this->callableName = $callableName;
+        }
+
+        return $this;
+    }
+
+    /**
      * Use unique name for store upload file.
      *
      * @return $this
@@ -367,12 +472,16 @@ trait UploadField
     /**
      * Get store name of upload file.
      *
-     * @param UploadedFile $file
+     * @param UploadedFile|null $file
      *
-     * @return string
+     * @return string|null
      */
-    protected function getStoreName(UploadedFile $file)
+    protected function getStoreName(?UploadedFile $file)
     {
+        if(is_null($file)){
+            return null;
+        }
+        
         if ($this->useUniqueName) {
             return $this->generateUniqueName($file);
         }
@@ -382,7 +491,11 @@ trait UploadField
         }
 
         if ($this->name instanceof \Closure) {
-            return $this->name->call($this, $file);
+            return $this->name->call($this, $file, $this);
+        }
+
+        if ($this->callableName instanceof \Closure) {
+            return $this->callableName->call($this, $file, $this);
         }
 
         if (is_string($this->name)) {
@@ -469,7 +582,7 @@ trait UploadField
     /**
      * Get file visit url.
      *
-     * @param $path
+     * @param string $path
      *
      * @return string
      */
@@ -571,6 +684,10 @@ trait UploadField
         if (method_exists($this, 'destroyThumbnail')) {
             $delete_all = true;
             $this->destroyThumbnail($delete_all);
+        }
+
+        if(!$this->original){
+            return;
         }
 
         if (!empty($this->original) && $this->storage->exists($this->original)) {

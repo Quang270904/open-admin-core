@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use OpenAdminCore\Admin\Form\Field;
 
 /**
+ * @property string $password
  * @method Field\Text           text($column, $label = '')
  * @method Field\Checkbox       checkbox($column, $label = '')
  * @method Field\CheckboxButton checkboxButton($column, $label = '')

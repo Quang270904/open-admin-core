@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Console;
+namespace OpenAdminCore\Admin\Console;
 
-use Encore\Admin\Admin;
+use OpenAdminCore\Admin\Admin;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 

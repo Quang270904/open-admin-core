@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Grid\Displayers;
+namespace OpenAdminCore\Admin\Grid\Displayers;
 
-use Encore\Admin\Admin;
+use OpenAdminCore\Admin\Admin;
 
 class Expand extends AbstractDisplayer
 {
@@ -21,7 +21,7 @@ class Expand extends AbstractDisplayer
         $key = $this->column->getName().'-'.$this->getKey();
 
         return <<<EOT
-<span class="grid-expand" data-inserted="0" data-key="{$key}" data-toggle="collapse" data-target="#grid-collapse-{$key}">
+<span class="grid-expand" data-inserted="0" data-key="{$key}" data-bs-toggle="collapse" data-target="#grid-collapse-{$key}">
    <a href="javascript:void(0)"><i class="fa fa-angle-double-down"></i>&nbsp;&nbsp;{$this->value}</a>
 </span>
 <template class="grid-expand-{$key}">

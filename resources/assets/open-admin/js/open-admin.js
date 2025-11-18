@@ -26,21 +26,21 @@ admin.init = function () {
 
 admin.menu = {
     init: function () {
-        let menuToggle = document.getElementById('menu-toggle');
+        // let menuToggle = document.getElementById('menu-toggle');
 
-        menuToggle.addEventListener('click', function () {
-            if (!document.body.classList.contains('side-menu-closed')) {
-                admin.menu.close();
-            }
+        // menuToggle.addEventListener('click', function () {
+        //     if (!document.body.classList.contains('side-menu-closed')) {
+        //         admin.menu.close();
+        //     }
 
-            if (window.innerWidth < 576) {
-                document.body.classList.toggle('side-menu-open');
-                document.body.classList.remove('side-menu-closed');
-            } else {
-                document.body.classList.toggle('side-menu-closed');
-                document.body.classList.remove('side-menu-open');
-            }
-        });
+        //     if (window.innerWidth < 576) {
+        //         document.body.classList.toggle('side-menu-open');
+        //         document.body.classList.remove('side-menu-closed');
+        //     } else {
+        //         document.body.classList.toggle('side-menu-closed');
+        //         document.body.classList.remove('side-menu-open');
+        //     }
+        // });
 
         window.addEventListener('resize', function () {
             if (window.innerWidth < 576) {
@@ -203,32 +203,29 @@ admin.ajax = {
         // history back
         window.onpopstate = function (event) {
             preventPopState = true;
-            admin.ajax.navigate(document.location, preventPopState);
+            // Restore scroll position from browser history state when user clicks back/forward
+            let scrollY = event.state && event.state.scrollY ? event.state.scrollY : 0;
+
+            $.pjax({
+                url: document.location.href,
+                container: '#pjax-container',
+                timeout: 2000,
+                scrollTo: false // Disable PJAX auto-scroll to prevent jumping to top
+            }).done(function () {
+                // Restore the saved scroll position after PJAX content is loaded
+                if (scrollY > 0) {
+                    setTimeout(() => window.scrollTo(0, scrollY), 50);
+                }
+            });
         };
 
         // link in content and menu
-        document.addEventListener(
-            'click',
-            function (event) {
-                if (event.target.matches('a[href], a[href] *')) {
-                    let a = event.target.closest('a');
-                    let url = a.getAttribute('href');
-
-                    if (url.charAt(0) !== '#' && url.substring(0, 11) !== 'javascript:' && url !== '' && !a.classList.contains('no-ajax') && a.getAttribute('target') !== '_blank') {
-                        preventPopState = false;
-                        admin.ajax.navigate(url, preventPopState);
-                        event.preventDefault();
-                    }
-                }
-            },
-            false
-        );
 
         // forms that should be submitted with ajax
         // now handled by admin.form.initAjax()
         // also needs to work for widgets
 
-        NProgress.configure({ parent: '#main' });
+        NProgress.configure({ parent: '#app' });
     },
 
     // use navigate when you want history working
@@ -252,7 +249,10 @@ admin.ajax = {
 
     setUrl: function (url) {
         if (url != document.location.href && !admin.ajax.currenTarget) {
-            history.pushState({}, url, url);
+            // Save current scroll position before navigating to new page
+            let scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+            // Store scroll position in browser history state for later restoration
+            history.pushState({ scrollY: scrollY }, '', url);
         }
     },
 
@@ -344,7 +344,7 @@ admin.ajax = {
             main = admin.ajax.currenTarget;
         }
         if (!main) {
-            main = document.getElementById('main');
+            main = document.querySelector('#pjax-container');
         }
 
         let data = response.data;
@@ -392,6 +392,10 @@ admin.ajax = {
 
 admin.pages = {
     init: function () {
+        clickEvent();
+        bindSubmitButtonWithLoading();
+        // handleSidebar();
+        // changeText();
         this.setTitle();
         admin.menu.setActivePage(window.location.href);
         admin.grid.init();
@@ -417,15 +421,193 @@ admin.pages = {
         });
 
         // tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"].enable-tooltip'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     },
+
 };
 
 admin.collectGarbage = function () {
     document.querySelectorAll('.flatpickr-calendar').forEach((cal) => {
         cal.remove();
     });
+};
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    showMethod: 'slideDown',
+    timeOut: 4000
+};
+
+$.pjax.defaults.maxCacheLength = 0;
+$(document).on('pjax:timeout', function (event) {
+    event.preventDefault();
+})
+
+$(function () {
+    $('.sidebar-menu li:not(.treeview) > a').on('click', function () {
+        var $parent = $(this).parent().addClass('active');
+        $parent.siblings('.treeview.active').find('> a').trigger('click');
+        $parent.siblings().removeClass('active').find('li').removeClass('active');
+    });
+    var menu = $('.sidebar-menu li > a[href="' + (location.pathname + location.search + location.hash) + '"]').parent().addClass('active');
+    menu.parents('ul.treeview-menu').addClass('menu-open');
+    menu.parents('li.treeview').addClass('active');
+
+    $('[data-toggle="popover"]').popover();
+
+    // Sidebar form autocomplete
+    $('.sidebar-form .autocomplete').on('keyup focus', function () {
+        var $menu = $('.sidebar-form .dropdown-menu');
+        var text = $(this).val();
+
+        if (text === '') {
+            $menu.hide();
+            return;
+        }
+
+        var regex = new RegExp(text, 'i');
+        var matched = false;
+
+        $menu.find('li').each(function () {
+            if (!regex.test($(this).find('a').text())) {
+                $(this).hide();
+            } else {
+                $(this).show();
+                matched = true;
+            }
+        });
+
+        if (matched) {
+            $menu.show();
+        }
+    }).click(function (event) {
+        event.stopPropagation();
+    });
+
+    $('.sidebar-form .dropdown-menu li a').click(function () {
+        $('.sidebar-form .autocomplete').val($(this).text());
+    });
+});
+
+
+(function ($) {
+
+    var Grid = function () {
+        this.selects = {};
+    };
+
+    Grid.prototype.select = function (id) {
+        this.selects[id] = id;
+    };
+
+    Grid.prototype.unselect = function (id) {
+        delete this.selects[id];
+    };
+
+    Grid.prototype.selected = function () {
+        var rows = [];
+        $.each(this.selects, function (key, val) {
+            rows.push(key);
+        });
+
+        return rows;
+    };
+
+    $.fn.admin = LA;
+    $.admin = LA;
+    $.admin.swal = swal;
+    $.admin.toastr = toastr;
+    $.admin.grid = new Grid();
+
+    $.admin.reload = function () {
+        $.pjax.reload('#pjax-container');
+    };
+
+    $.admin.redirect = function (url) {
+        $.pjax({ container: '#pjax-container', url: url });
+    };
+
+    $.admin.getToken = function () {
+        return $('meta[name="csrf-token"]').attr('content');
+    };
+
+})(jQuery);
+
+$(document).on('submit', 'form[pjax-container]', function (event) {
+  const container = '#pjax-container';
+
+  $.pjax.submit(event, container);
+
+  $(container).one('pjax:success', function () {
+    $(this).find('select').each(function () {
+      if ($(this).data('select2')) {
+        $(this).select2('destroy');
+      }
+      $(this).select2({ width: '100%' });
+    });
+  });
+});
+
+
+$(document).on('pjax:end', function () {
+    // bindSubmitButtonWithLoading();
+    // changeText();
+    document.querySelectorAll('[data-bs-toggle="tooltip"].enable-tooltip').forEach(function (el) {
+        new bootstrap.Tooltip(el, {
+            title: el.getAttribute('data-bs-original-title') || el.getAttribute('title')
+        });
+    });
+
+});
+$(document).on('pjax:send', function (xhr) {
+    if (xhr.relatedTarget && xhr.relatedTarget.tagName && xhr.relatedTarget.tagName.toLowerCase() === 'form') {
+        const $form = $(xhr.relatedTarget);        
+        const $submit_btn = $form.find(':submit');
+
+        if ($submit_btn.length) {
+            $submit_btn.data('original-text', $submit_btn.html());
+            $submit_btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>loading...');
+            $submit_btn.css('display', 'inline-flex');
+            $submit_btn.css('align-items', 'center');
+            $submit_btn.prop('disabled', true);
+        }
+    }
+    NProgress.start();
+});
+
+$(document).on('pjax:complete', function (xhr) {
+    if (xhr.relatedTarget && xhr.relatedTarget.tagName && xhr.relatedTarget.tagName.toLowerCase() === 'form') {
+        const $form = $(xhr.relatedTarget);
+        const $submit_btn = $form.find(':submit');
+
+        if ($submit_btn.length) {
+            const originalText = $submit_btn.data('original-text');
+            $submit_btn.html(originalText || '<i class="fa fa-search"></i>');
+            $submit_btn.prop('disabled', false);
+        }
+    }
+    NProgress.done();
+    $.admin.grid.selects = {};
+});
+
+
+$.fn.editable.defaults.params = function (params) {
+    params._token = LA.token;
+    params._editable = 1;
+    params._method = 'PUT';
+    return params;
+};
+
+$.fn.editable.defaults.error = function (data) {
+    var msg = '';
+    if (data.responseJSON.errors) {
+        $.each(data.responseJSON.errors, function (k, v) {
+            msg += v + "\n";
+        });
+    }
+    return msg
 };

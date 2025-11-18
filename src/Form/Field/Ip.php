@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
 class Ip extends Text
 {

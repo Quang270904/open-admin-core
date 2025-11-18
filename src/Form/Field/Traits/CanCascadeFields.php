@@ -76,8 +76,9 @@ trait CanCascadeFields
      */
     public function fill($data)
     {
+        // \Log::info('Fill data', ['data' => $data]);
         parent::fill($data);
-
+        // \Log::info('Field value after parent::fill', ['value' => $this->value]);
         $this->applyCascadeConditions();
     }
 
@@ -103,12 +104,26 @@ trait CanCascadeFields
     protected function applyCascadeConditions()
     {
         if ($this->form) {
-            $this->form->fields()
-                ->filter(function (Form\Field $field) {
+            $fields = $this->form->fields();
+            
+            // Convert to Collection if needed, or use array_filter
+            if (is_array($fields)) {
+                $filteredFields = array_filter($fields, function (Form\Field $field) {
                     return $field instanceof CascadeGroup
                         && $field->dependsOn($this)
                         && $this->hitsCondition($field);
-                })->each->visiable();
+                });
+                foreach ($filteredFields as $field) {
+                    $field->visible(); 
+                }
+            } else {
+                // If it is a Collection, keep the original logic
+                $fields->filter(function (Form\Field $field) {
+                    return $field instanceof CascadeGroup
+                        && $field->dependsOn($this)
+                        && $this->hitsCondition($field);
+                })->each->visible(); 
+            }
         }
     }
 

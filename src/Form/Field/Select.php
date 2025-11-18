@@ -1,17 +1,19 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Validator\HasOptionRule;
-use Encore\Admin\Facades\Admin;
-use Encore\Admin\Form\Field;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use OpenAdminCore\Admin\Form\Field;
+use OpenAdminCore\Admin\Form\Field\Traits\CanCascadeFields;
+use OpenAdminCore\Admin\Validator\HasOptionRule;
+use OpenAdminCore\Admin\Facades\Admin;
 
 class Select extends Field
 {
+    use CanCascadeFields;
     /**
      * @var array<string>
      */
@@ -52,6 +54,17 @@ class Select extends Field
     protected $config = [];
 
     /**
+     * @var string
+     */
+    protected $cascadeEvent = 'change';
+
+    /**
+     * @var bool
+     */
+    protected $native = false;
+
+    public $additional_script = '';
+   /**
      * @var boolean
      */
     protected $freeInput = false;
@@ -562,9 +575,9 @@ EOT;
     }
 
     /**
-     * Set config for select2.
+     * Set config for Choicesjs.
      *
-     * all configurations see https://select2.org/configuration/options-api
+     * all configurations see https://github.com/jshjohnson/Choices
      *
      * @param string $key
      * @param mixed  $val
@@ -579,6 +592,9 @@ EOT;
     }
 
     /**
+     * Set as readonly (actual dissable with backup hidden field).
+     */
+/**
      * {@inheritdoc}
      */
     public function readonly()
@@ -586,6 +602,33 @@ EOT;
         $this->config('containerCssClass', 'select2-readonly');
 
         return parent::readonly();
+    }
+
+    /**
+     * Returns variable name for ChoicesJS object.
+     */
+    public function choicesObjName($field = false)
+    {
+        if (empty($field)) {
+            $field = str_replace([' ', '-'], ['_', '_'], $this->getElementClassString());
+        }
+
+        return 'choices_'.$field;
+    }
+
+    /**
+     * Check if field should be rendered as Choises JS (not the case if fields are embed in popup).
+     */
+    public function allowedChoicesJs()
+    {
+        $class = get_class($this);
+
+        return in_array($class, [
+            'OpenAdminCore\Admin\Form\Field\Select',
+            'OpenAdminCore\Admin\Form\Field\Tags',
+            'OpenAdminCore\Admin\Form\Field\MultipleSelect',
+            'OpenAdminCore\Admin\Form\Field\Timezone',
+        ]);
     }
 
     /**
@@ -640,6 +683,8 @@ EOT;
             'buttons'  => $this->buttons,
             'addEmpty'  => $this->addEmpty,
         ]);
+
+        $this->addCascadeScript();
 
         $this->attribute('data-value', implode(',', (array) $this->value()));
 

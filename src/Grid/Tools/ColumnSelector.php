@@ -1,9 +1,9 @@
 <?php
 
-namespace Encore\Admin\Grid\Tools;
+namespace OpenAdminCore\Admin\Grid\Tools;
 
-use Encore\Admin\Admin;
-use Encore\Admin\Grid;
+use OpenAdminCore\Admin\Admin;
+use OpenAdminCore\Admin\Grid;
 use Illuminate\Support\Collection;
 
 class ColumnSelector extends AbstractTool
@@ -72,7 +72,7 @@ HTML;
         return <<<EOT
 
 <div class="dropdown pull-right column-selector" style="margin-right: 10px">
-    <button type="button" class="btn btn-sm btn-instagram dropdown-toggle" data-toggle="dropdown">
+    <button type="button" class="btn btn-sm btn-instagram dropdown-toggle" data-bs-toggle="dropdown">
         <i class="fa fa-table"></i>
         &nbsp;
         <span class="caret"></span>

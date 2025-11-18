@@ -1,10 +1,11 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Admin;
-use Encore\Admin\Form\Field;
 use Illuminate\Support\Arr;
+use OpenAdminCore\Admin\Admin;
+use OpenAdminCore\Admin\Form\Field;
+use OpenAdminCore\Admin\Form\Field\Traits\Sortable;
 
 class ListField extends Field
 {
@@ -67,6 +68,12 @@ class ListField extends Field
         $this->data = $data;
 
         $this->value = Arr::get($data, $this->column, $this->value);
+        if (!is_array($this->value)) {
+            $this->value = json_decode($this->value);
+        }
+        if (empty($this->value)) {
+            $this->value = [''];
+        }
 
         $this->formatValue();
     }
@@ -96,20 +103,12 @@ class ListField extends Field
             return false;
         }
 
-        $rules["{$this->column}.values.*"] = $fieldRules;
-        $attributes["{$this->column}.values.*"] = __('Value');
+        $rules["{$this->column}.*"] = $fieldRules;
+        $attributes["{$this->column}.*"] = __('Value');
 
-        $rules["{$this->column}.values"][] = 'array';
+        $rules["{$this->column}"][] = 'array';
 
-        if (!is_null($this->max)) {
-            $rules["{$this->column}.values"][] = "max:$this->max";
-        }
-
-        if (!is_null($this->min)) {
-            $rules["{$this->column}.values"][] = "min:$this->min";
-        }
-
-        $attributes["{$this->column}.values"] = $this->label;
+        $attributes["{$this->column}"] = $this->label;
 
         return validator($input, $rules, $this->getValidationMessages(), $attributes);
     }
@@ -141,7 +140,14 @@ SCRIPT;
      */
     public function prepare($value)
     {
-        return array_values($value['values']);
+        $value = (array) parent::prepare($value);
+
+        $values = array_values($value);
+        if (count($values) == 1 && empty($values[0])) {
+            return [];
+        }
+
+        return $values;
     }
 
     /**
@@ -150,6 +156,9 @@ SCRIPT;
      */
     public function render()
     {
+        $this->addSortable('tbody.list-', '-table');
+        view()->share('options', $this->options);
+
         $this->setupScript();
 
         Admin::style('td .form-group {margin-bottom: 0 !important;}');

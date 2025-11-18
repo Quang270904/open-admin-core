@@ -1,10 +1,21 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
+
+use OpenAdminCore\Admin\Form;
 
 class Email extends Text
 {
     protected $rules = 'nullable|email';
+
+    public function setForm($form = null)
+    {
+        $this->form = $form;
+        // field type url has a default browser validation
+        $this->form->enableValidate();
+
+        return $this;
+    }
 
     public function render()
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Controllers;
+namespace OpenAdminCore\Admin\Controllers;
 
-use Encore\Admin\Layout\Content;
+use OpenAdminCore\Admin\Layout\Content;
 use Illuminate\Routing\Controller;
 
 /**

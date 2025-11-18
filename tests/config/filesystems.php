@@ -76,8 +76,8 @@ return [
                 'https'   => 'dn-yourdomain.qbox.me',         //你的HTTPS域名
                 'custom'  => 'static.abc.com',                //你的自定义域名
             ],
-            'access_key' => 'AccessKey',  //AccessKey
-            'secret_key' => 'SecretKey',  //SecretKey
+            'access_key' => 'access_key',  //AccessKey
+            'secret_key' => 'secret_key',  //SecretKey
             'bucket'     => 'laravel',  //Bucket名字
             'notify_url' => '',  //持久化处理回调地址
         ],

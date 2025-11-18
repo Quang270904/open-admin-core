@@ -3,7 +3,7 @@
     <div class="panel box box-primary" style="margin-bottom: 0px">
         <div class="box-header with-border">
             <h4 class="box-title">
-                <a data-toggle="collapse" data-parent="#{{$id}}" href="#collapse{{ $key }}">
+                <a data-bs-toggle="collapse" data-parent="#{{$id}}" href="#collapse{{ $key }}">
                     {{ $item['title'] }}
                 </a>
             </h4>

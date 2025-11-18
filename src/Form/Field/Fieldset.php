@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Admin;
+use OpenAdminCore\Admin\Admin;
 
 class Fieldset
 {
@@ -37,7 +37,7 @@ SCRIPT;
 <div>
     <div style="height: 20px; border-bottom: 1px solid #eee; text-align: center;margin-top: 20px;margin-bottom: 20px;">
       <span style="font-size: 16px; background-color: #ffffff; padding: 0 10px;">
-        <a data-toggle="collapse" href="#{$this->name}" class="{$this->name}-title">
+        <a data-bs-toggle="collapse" href="#{$this->name}" class="{$this->name}-title">
           <i class="fa fa-angle-double-up"></i>&nbsp;&nbsp;{$title}
         </a>
       </span>

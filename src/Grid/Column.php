@@ -1,45 +1,26 @@
 <?php
 
-namespace Encore\Admin\Grid;
+namespace OpenAdminCore\Admin\Grid;
 
-use Carbon\Carbon;
 use Closure;
-use Encore\Admin\Admin;
-use Encore\Admin\Grid;
-use Encore\Admin\Grid\Displayers\AbstractDisplayer;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use OpenAdminCore\Admin\Actions\RowAction;
+use OpenAdminCore\Admin\Grid;
+use OpenAdminCore\Admin\Grid\Displayers\AbstractDisplayer;
 
-/**
- * Class Column.
- *
- * @method Displayers\Editable      editable()
- * @method Displayers\SwitchDisplay switch ($states = [])
- * @method Displayers\SwitchGroup   switchGroup($columns = [], $states = [])
- * @method Displayers\Select        select($options = [])
- * @method Displayers\Image         image($server = '', $width = 200, $height = 200)
- * @method Displayers\Label         label($style = 'success')
- * @method Displayers\Button        button($style = null)
- * @method Displayers\Link          link($href = '', $target = '_blank')
- * @method Displayers\Badge         badge($style = 'red')
- * @method Displayers\ProgressBar   progressBar($style = 'primary', $size = 'sm', $max = 100)
- * @method Displayers\Radio         radio($options = [])
- * @method Displayers\Checkbox      checkbox($options = [])
- * @method Displayers\Orderable     orderable($column, $label = '')
- * @method Displayers\Table         table($titles = [])
- * @method Displayers\Expand        expand($callback = null)
- * @method Displayers\Modal         modal($callback = null)
- * @method Displayers\Carousel      carousel(int $width = 300, int $height = 200, $server = '')
- * @method Displayers\Download      download($server = '')
- */
 class Column
 {
-    const SELECT_COLUMN_NAME = '__row_selector__';
+    use Column\HasHeader;
+    use Column\InlineEditing;
+    use Column\ExtendDisplay;
 
-    const ACTION_COLUMN_NAME = '__actions__';
+    public const SELECT_COLUMN_NAME = '__row_selector__';
+
+    public const ACTION_COLUMN_NAME = '__actions__';
 
     /**
      * @var Grid
@@ -151,14 +132,8 @@ class Column
     /**
      * @var bool
      */
-    protected $escape = true;
+    protected $escape = false;
 
-    /**
-     * Displayers for grid column.
-     *
-     * @var array<string, mixed>
-     */
-    public static $displayers = [];
 
     /**
      * Defined columns.
@@ -178,6 +153,11 @@ class Column
     protected static $classes = [];
 
     /**
+     * @var array<string, mixed>
+     */
+    protected static $rowAttributes = [];
+
+    /**
      * @var Model|null
      */
     protected static $model;
@@ -189,8 +169,9 @@ class Column
     public function __construct($name, $label)
     {
         $this->name = $name;
-
         $this->label = $this->formatLabel($label);
+
+        $this->initAttributes();
     }
 
     /**
@@ -204,6 +185,16 @@ class Column
     public static function extend($name, $displayer)
     {
         static::$displayers[$name] = $displayer;
+    }
+
+    /**
+     * Initialize column attributes.
+     */
+    protected function initAttributes()
+    {
+        $name = str_replace('.', '-', $this->name);
+
+        $this->setAttributes(['class' => "column-{$name}"]);
     }
 
     /**
@@ -242,7 +233,7 @@ class Column
      */
     public function setModel($model)
     {
-        if (is_null(static::$model) && ($model instanceof Model)) {
+        if (is_null(static::$model) && ($model instanceof BaseModel)) {
             static::$model = $model->newInstance();
         }
     }
@@ -266,9 +257,21 @@ class Column
      *
      * @return $this
      */
-    public function setAttributes($attributes = [])
+    public function setAttributes($attributes = [], $key = null)
     {
-        static::$htmlAttributes[$this->name] = $attributes;
+        if ($key) {
+            static::$rowAttributes[$this->name][$key] = array_merge(
+                Arr::get(static::$rowAttributes, "{$this->name}.{$key}", []),
+                $attributes
+            );
+
+            return $this;
+        }
+
+        static::$htmlAttributes[$this->name] = array_merge(
+            Arr::get(static::$htmlAttributes, $this->name, []),
+            $attributes
+        );
 
         return $this;
     }
@@ -280,9 +283,17 @@ class Column
      *
      * @return mixed
      */
-    public static function getAttributes($name)
+    public static function getAttributes($name, $key = null)
     {
-        return Arr::get(static::$htmlAttributes, $name, '');
+        $rowAttributes = [];
+
+        if ($key && Arr::has(static::$rowAttributes, "{$name}.{$key}")) {
+            $rowAttributes = Arr::get(static::$rowAttributes, "{$name}.{$key}", []);
+        }
+
+        $columnAttributes = Arr::get(static::$htmlAttributes, $name, []);
+
+        return array_merge($rowAttributes, $columnAttributes);
     }
 
     /**
@@ -297,6 +308,21 @@ class Column
         static::$classes[$this->name] = $classes;
 
         return $this;
+    }
+
+    /**
+     * Format attributes to html.
+     *
+     * @return string
+     */
+    public function formatHtmlAttributes()
+    {
+        $attrArr = [];
+        foreach (static::getAttributes($this->name) as $name => $val) {
+            $attrArr[] = "$name=\"$val\"";
+        }
+
+        return implode(' ', $attrArr);
     }
 
     /**
@@ -330,9 +356,9 @@ class Column
      *
      * @return $this
      */
-    public function width($width)
+    public function width(int $width)
     {
-        return $this->style("width: {$width}px;");
+        return $this->style("width: {$width}px;max-width: {$width}px;word-wrap: break-word;word-break: normal;");
     }
 
     /**
@@ -435,6 +461,18 @@ class Column
     }
 
     /**
+     * Get header classes of this column.
+     *
+     * @return string
+     */
+    public function getClassName()
+    {
+        $name = str_replace('.', '-', $this->getName());
+
+        return "column-{$name}";
+    }
+
+    /**
      * Format label.
      *
      * @param mixed $label
@@ -529,18 +567,21 @@ class Column
     /**
      * Mark this column as sortable.
      *
-     * @return $this
+     * @param null|string $cast
+     *
+     * @return Column|string
      */
-    public function sortable()
+    public function sortable($cast = null)
     {
-        return $this->sort(true);
+        return $this->addSorter($cast);
     }
 
     /**
      * Set cast name for sortable.
-     * @param string $cast
      *
      * @return $this
+     *
+     * @deprecated Use `$column->sortable($cast)` instead.
      */
     public function cast($cast)
     {
@@ -580,6 +621,18 @@ class Column
     public function getSortCallback()
     {
         return $this->sortCallback;
+    }
+
+    /**
+     * Set column filter.
+     *
+     * @param mixed|null $builder
+     *
+     * @return $this
+     */
+    public function filter($builder = null)
+    {
+        return $this->addFilter(...func_get_args());
     }
 
     /**
@@ -804,6 +857,34 @@ class Column
         });
     }
 
+
+    /**
+     * Display column using a grid row action.
+     *
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function action($action)
+    {
+        if (!is_subclass_of($action, RowAction::class)) {
+            throw new \InvalidArgumentException("Action class [$action] must be sub-class of [OpenAdminCore\Admin\Actions\GridAction]");
+        }
+
+        $grid = $this->grid;
+
+        return $this->display(function ($_, $column) use ($action, $grid) {
+            /** @var RowAction $action */
+            $action = new $action();
+
+            return $action
+                ->asColumn()
+                ->setGrid($grid)
+                ->setColumn($column)
+                ->setRow($this);
+        });
+    }
+
     /**
      * If has display callbacks.
      *
@@ -834,7 +915,7 @@ class Column
                 ($last = array_pop($this->displayCallbacks))
             ) {
                 $last = $this->bindOriginalRowModel($last, $key);
-                $value = call_user_func($last, $previous);
+                $value = call_user_func_array($last, [$previous, $this]);
             }
         }
 
@@ -953,10 +1034,10 @@ class Column
     {
         if (is_array($item)) {
             array_walk_recursive($item, function (&$value) {
-                $value = htmlentities_ex($value);
+                $value = htmlentities_ex($value ?? '');
             });
         } else {
-            $item = htmlentities_ex($item);
+            $item = htmlentities_ex($item ?? '');
         }
 
         return $item;
@@ -1143,7 +1224,7 @@ HELP;
                 $displayer = new $abstract($value, $grid, $column, $this);
 
                 return $displayer->display(...$arguments);
-            })->escape(false);
+            });
         }
 
         return $this;

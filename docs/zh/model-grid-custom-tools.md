@@ -9,8 +9,8 @@
 
 namespace App\Admin\Extensions\Tools;
 
-use Encore\Admin\Admin;
-use Encore\Admin\Grid\Tools\AbstractTool;
+use OpenAdminCore\Admin\Admin;
+use OpenAdminCore\Admin\Grid\Tools\AbstractTool;
 use Illuminate\Support\Facades\Request;
 
 class UserGender extends AbstractTool
@@ -49,7 +49,7 @@ EOT;
 ```
 视图`admin.tools.gender`文件为`resources/views/admin/tools/gender.blade.php`:
 ```php
-<div class="btn-group" data-toggle="buttons">
+<div class="btn-group" data-bs-toggle="buttons">
     @foreach($options as $option => $label)
     <label class="btn btn-default btn-sm {{ \Request::get('gender', 'all') == $option ? 'active' : '' }}">
         <input type="radio" class="user-gender" value="{{ $option }}">{{$label}}
@@ -98,7 +98,7 @@ $grid->tools(function ($tools) {
 
 namespace App\Admin\Extensions\Tools;
 
-use Encore\Admin\Grid\Tools\BatchAction;
+use OpenAdminCore\Admin\Grid\Tools\BatchAction;
 
 class ReleasePost extends BatchAction
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Encore\Admin\Widgets\Grid\Concerns;
+namespace OpenAdminCore\Admin\Widgets\Grid\Concerns;
 
 use Closure;
-use Encore\Admin\Widgets\Grid\Tools;
+use OpenAdminCore\Admin\Widgets\Grid\Tools;
 
 trait HasTools
 {

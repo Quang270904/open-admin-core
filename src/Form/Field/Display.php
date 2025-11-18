@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form\Field;
+use OpenAdminCore\Admin\Form\Field;
 
 class Display extends Field
 {
@@ -59,7 +59,7 @@ class Display extends Field
 
         return $this;
     }
-    
+
     /**
      * Render this filed.
      *
@@ -71,10 +71,15 @@ class Display extends Field
             $this->displayText = $this->displayText->call($this, $this->value);
         }
 
-        return parent::render()->with([
+        return parent::fieldRender([
             'displayText' => $this->displayText,
             'displayClass' => $this->displayClass,
             'escape' => $this->escape,
         ]);
+    }
+
+    public function prepare($value)
+    {
+        return $this->original() ?: $value;
     }
 }

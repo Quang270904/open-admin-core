@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Grid\Tools;
+namespace OpenAdminCore\Admin\Grid\Tools;
 
 class BatchDelete extends BatchAction
 {
@@ -29,7 +29,6 @@ class BatchDelete extends BatchAction
         return <<<EOT
 
 $('{$this->getElementClass()}').on('click', function() {
-
     swal({
         title: "{$trans['delete_confirm']}",
         type: "warning",

@@ -1,10 +1,10 @@
 <?php
 
-namespace Encore\Admin\Widgets\Grid\Concerns;
+namespace OpenAdminCore\Admin\Widgets\Grid\Concerns;
 
-use Encore\Admin\Widgets\Grid\Grid;
-use Encore\Admin\Widgets\Grid\Column;
-use Encore\Admin\Widgets\Grid\Tools\ColumnSelector;
+use OpenAdminCore\Admin\Widgets\Grid\Grid;
+use OpenAdminCore\Admin\Widgets\Grid\Column;
+use OpenAdminCore\Admin\Widgets\Grid\Tools\ColumnSelector;
 use Illuminate\Support\Collection;
 
 trait CanHidesColumns

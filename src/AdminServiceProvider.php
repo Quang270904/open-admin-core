@@ -1,10 +1,12 @@
 <?php
 
-namespace Encore\Admin;
+namespace OpenAdminCore\Admin;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use OpenAdminCore\Admin\Layout\Content;
 
 class AdminServiceProvider extends ServiceProvider
 {
@@ -14,6 +16,7 @@ class AdminServiceProvider extends ServiceProvider
     protected $commands = [
         Console\AdminCommand::class,
         Console\MakeCommand::class,
+        Console\ControllerCommand::class,
         Console\MenuCommand::class,
         Console\InstallCommand::class,
         Console\PublishCommand::class,
@@ -25,6 +28,11 @@ class AdminServiceProvider extends ServiceProvider
         Console\ExportSeedCommand::class,
         Console\MinifyCommand::class,
         Console\FormCommand::class,
+        Console\PermissionCommand::class,
+        Console\ActionCommand::class,
+        Console\GenerateMenuCommand::class,
+        Console\ConfigCommand::class,
+        Console\DevLinksCommand::class,
     ];
 
     /**
@@ -34,6 +42,7 @@ class AdminServiceProvider extends ServiceProvider
      */
     protected $routeMiddleware = [
         'admin.auth'       => Middleware\Authenticate::class,
+        'admin.throttle'   => Middleware\Throttle::class,
         'admin.pjax'       => Middleware\Pjax::class,
         'admin.log'        => Middleware\LogOperation::class,
         'admin.permission' => Middleware\Permission::class,
@@ -49,11 +58,12 @@ class AdminServiceProvider extends ServiceProvider
     protected $middlewareGroups = [
         'admin' => [
             'admin.auth',
+            'admin.throttle',
             'admin.pjax',
             'admin.log',
             'admin.bootstrap',
             'admin.permission',
-//            'admin.session',
+            //            'admin.session',
         ],
     ];
 
@@ -66,15 +76,37 @@ class AdminServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'admin');
 
-        if (config('admin.https') || config('admin.secure')) {
-            \URL::forceScheme('https');
-            $this->app['request']->server->set('HTTPS', true);
-        }
+        $this->ensureHttps();
 
         if (file_exists($routes = admin_path('routes.php'))) {
             $this->loadRoutesFrom($routes);
         }
 
+        $this->registerPublishing();
+        $this->compatibleBlade();
+        $this->bladeDirectives();
+    }
+
+    /**
+     * Force to set https scheme if https enabled.
+     *
+     * @return void
+     */
+    protected function ensureHttps()
+    {
+        if (config('admin.https') || config('admin.secure')) {
+            url()->forceScheme('https');
+            $this->app['request']->server->set('HTTPS', true);
+        }
+    }
+
+    /**
+     * Register the package's publishable resources.
+     *
+     * @return void
+     */
+    protected function registerPublishing()
+    {
         if ($this->app->runningInConsole()) {
             $this->publishes([__DIR__.'/../config' => config_path()], 'open-admin-config');
             $this->publishes([__DIR__.'/../resources/lang' => resource_path('lang')], 'open-admin-lang');
@@ -82,12 +114,44 @@ class AdminServiceProvider extends ServiceProvider
             $this->publishes([__DIR__.'/../resources/assets' => public_path('vendor/open-admin')], 'open-admin-assets');
             $this->publishes([__DIR__.'/../resources/assets/test' => public_path('vendor/open-admin-test')], 'open-admin-test');
         }
+    }
 
-        //remove default feature of double encoding enable in laravel 5.6 or later.
-        $bladeReflectionClass = new \ReflectionClass('\Illuminate\View\Compilers\BladeCompiler');
-        if ($bladeReflectionClass->hasMethod('withoutDoubleEncoding')) {
+    /**
+     * Remove default feature of double encoding enable in laravel 5.6 or later.
+     *
+     * @return void
+     */
+    protected function compatibleBlade()
+    {
+        $reflectionClass = new \ReflectionClass('\Illuminate\View\Compilers\BladeCompiler');
+
+        if ($reflectionClass->hasMethod('withoutDoubleEncoding')) {
             Blade::withoutDoubleEncoding();
         }
+    }
+
+    /**
+     * Extends laravel router.
+     */
+    protected function macroRouter()
+    {
+        Router::macro('content', function ($uri, $content, $options = []) {
+            return $this->match(['GET', 'HEAD'], $uri, function (Content $layout) use ($content, $options) {
+                return $layout
+                    ->title(Arr::get($options, 'title', ' '))
+                    ->description(Arr::get($options, 'desc', ' '))
+                    ->body($content);
+            });
+        });
+
+        Router::macro('component', function ($uri, $component, $data = [], $options = []) {
+            return $this->match(['GET', 'HEAD'], $uri, function (Content $layout) use ($component, $data, $options) {
+                return $layout
+                    ->title(Arr::get($options, 'title', ' '))
+                    ->description(Arr::get($options, 'desc', ' '))
+                    ->component($component, $data);
+            });
+        });
     }
 
     /**
@@ -102,6 +166,8 @@ class AdminServiceProvider extends ServiceProvider
         $this->registerRouteMiddleware();
 
         $this->commands($this->commands);
+
+        $this->macroRouter();
     }
 
     /**
@@ -135,5 +201,21 @@ class AdminServiceProvider extends ServiceProvider
         foreach ($this->middlewareGroups as $key => $middleware) {
             app('router')->middlewareGroup($key, $middleware);
         }
+    }
+
+    /**
+     * Register the blade box directive.
+     *
+     * @return void
+     */
+    public function bladeDirectives()
+    {
+        Blade::directive('box', function ($title) {
+            return "<?php \$box = new \OpenAdminCore\Admin\Widgets\Box({$title}, '";
+        });
+
+        Blade::directive('endbox', function ($expression) {
+            return "'); echo \$box->render(); ?>";
+        });
     }
 }

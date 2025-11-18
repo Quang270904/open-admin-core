@@ -1,12 +1,13 @@
 <?php
 
-namespace Encore\Admin\Middleware;
+namespace OpenAdminCore\Admin\Middleware;
 
 use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Str;
+use OpenAdminCore\Admin\Facades\Admin;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,7 +25,7 @@ class Pjax
     {
         $response = $next($request);
 
-        if (!$request->pjax() || $response->isRedirection() || Auth::guard('admin')->guest()) {
+        if (!$request->pjax() || $response->isRedirection() || Admin::guard()->guest()) {
             return $response;
         }
 
@@ -91,11 +92,32 @@ class Pjax
      */
     protected function filterResponse(Response $response, $container)
     {
-        $crawler = new Crawler($response->getContent());
+        $input = $response->getContent();
+
+        $title = $this->makeFromBetween($input, '<title>', '</title>');
+        $title = !empty($title) ? '<title>' . $title . '</title>' : '';
+
+        $content = $this->makeFromBetween($input, '<!--start-pjax-container-->', '<!--end-pjax-container-->');
+        $content = $this->decodeUtf8HtmlEntities($content);
+
+
+        if (empty($content)) {
+            // try dom-crwawler
+            // this is much slower though
+            $crawler = new Crawler($input);
+            $title = $this->makeTitle($crawler);
+            $content = $this->fetchContents($crawler, $container);
+        }
+
+        /*
+        if (empty($content)) {
+            abort(422);
+        }
+        */
+
 
         $response->setContent(
-            $this->makeTitle($crawler).
-            $this->fetchContents($crawler, $container)
+            $title . $content
         );
 
         return $this;
@@ -113,6 +135,23 @@ class Pjax
         $pageTitle = $crawler->filter('head > title')->html();
 
         return "<title>{$pageTitle}</title>";
+    }
+
+    /**
+     * Prepare an HTML title tag.
+     *
+     * @param string $input
+     *
+     * @return string
+     */
+    protected function makeFromBetween($input, $start, $end)
+    {
+        $str = '';
+        if (Str::contains($input, $start)) {
+            $str = Str::between($input, $start, $end);
+        }
+
+        return $str;
     }
 
     /**

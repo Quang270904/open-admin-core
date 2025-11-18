@@ -3,7 +3,6 @@
 use Illuminate\Support\MessageBag;
 
 if (!function_exists('admin_path')) {
-
     /**
      * Get admin path.
      *
@@ -78,7 +77,6 @@ if (!function_exists('admin_base_path')) {
 }
 
 if (!function_exists('admin_toastr')) {
-
     /**
      * Flash a toastr message bag to session.
      *
@@ -97,7 +95,6 @@ if (!function_exists('admin_toastr')) {
 }
 
 if (!function_exists('admin_success')) {
-
     /**
      * Flash a success message bag to session.
      *
@@ -113,7 +110,6 @@ if (!function_exists('admin_success')) {
 }
 
 if (!function_exists('admin_error')) {
-
     /**
      * Flash a error message bag to session.
      *
@@ -129,7 +125,6 @@ if (!function_exists('admin_error')) {
 }
 
 if (!function_exists('admin_warning')) {
-
     /**
      * Flash a warning message bag to session.
      *
@@ -145,7 +140,6 @@ if (!function_exists('admin_warning')) {
 }
 
 if (!function_exists('admin_info')) {
-
     /**
      * Flash a message bag to session.
      *
@@ -159,7 +153,7 @@ if (!function_exists('admin_info')) {
     {
         $message = new MessageBag(get_defined_vars());
 
-        session()->flash($type, $message);
+        session()->now($type, $message);
     }
 }
 
@@ -216,9 +210,8 @@ if (!function_exists('admin_info_once')) {
 }
 
 if (!function_exists('admin_asset')) {
-
     /**
-     * @param  string $path
+     * @param $path
      *
      * @return string
      */
@@ -229,7 +222,6 @@ if (!function_exists('admin_asset')) {
 }
 
 if (!function_exists('admin_trans')) {
-
     /**
      * Translate the given message.
      *
@@ -252,7 +244,6 @@ if (!function_exists('admin_trans')) {
 }
 
 if (!function_exists('array_delete')) {
-
     /**
      * Delete from array by value.
      *
@@ -263,8 +254,10 @@ if (!function_exists('array_delete')) {
      */
     function array_delete(&$array, $value)
     {
+        $value = \Illuminate\Support\Arr::wrap($value);
+
         foreach ($array as $index => $item) {
-            if ($value == $item) {
+            if (in_array($item, $value)) {
                 unset($array[$index]);
             }
         }
@@ -272,7 +265,6 @@ if (!function_exists('array_delete')) {
 }
 
 if (!function_exists('class_uses_deep')) {
-
     /**
      * To get ALL traits including those used by parent classes and other traits.
      *
@@ -298,7 +290,6 @@ if (!function_exists('class_uses_deep')) {
 }
 
 if (!function_exists('admin_dump')) {
-
     /**
      * @param mixed $var
      *
@@ -319,7 +310,6 @@ if (!function_exists('admin_dump')) {
 }
 
 if (!function_exists('file_size')) {
-
     /**
      * Convert file size to a human readable format like `100mb`.
      *
@@ -350,7 +340,6 @@ if (!function_exists('file_size')) {
 }
 
 if (!function_exists('prepare_options')) {
-
     /**
      * @param array<mixed> $options
      *
@@ -379,7 +368,6 @@ if (!function_exists('prepare_options')) {
 }
 
 if (!function_exists('json_encode_options')) {
-
     /**
      * @param array<mixed> $options
      *
@@ -597,5 +585,12 @@ if (!function_exists('json_encode_options')) {
             /** @phpstan-ignore-next-line Parameter #4 $flags of function preg_match expects TFlags of 0|256|512|768, int given. */
             return preg_match($pattern, $subject, $matches, $flags, $offset);
         }
+    }
+}
+
+if (!function_exists('admin_get_route')) {
+    function admin_get_route(string $name): string
+    {
+        return config('admin.route.prefix').'.'.$name;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Grid\Displayers;
+namespace OpenAdminCore\Admin\Grid\Displayers;
 
 class Modal extends AbstractDisplayer
 {
@@ -24,7 +24,7 @@ class Modal extends AbstractDisplayer
         $key = $this->getKey().'-'.$this->getColumn()->getName();
 
         return <<<EOT
-<span class="grid-expand" data-toggle="modal" data-target="#grid-modal-{$key}">
+<span class="grid-expand" data-bs-toggle="modal" data-target="#grid-modal-{$key}">
    <a href="javascript:void(0)"><i class="fa fa-clone"></i>&nbsp;&nbsp;{$this->value}</a>
 </span>
 

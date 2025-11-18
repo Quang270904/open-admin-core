@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Widgets;
+namespace OpenAdminCore\Admin\Widgets;
 
 use Illuminate\Contracts\Support\Renderable;
 
@@ -33,6 +33,11 @@ class Box extends Widget implements Renderable
      * @var array<mixed>
      */
     protected $tools = [];
+    
+    /**
+     * @var array
+     */
+    protected $styles = [];
 
     /**
      * @var string
@@ -60,7 +65,22 @@ class Box extends Widget implements Renderable
             $this->footer($footer);
         }
 
-        $this->class('box');
+        $this->id = uniqid('box-');
+        $this->class('card');
+    }
+
+    /**
+     * Set box id.
+     *
+     * @param string $id
+     *
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

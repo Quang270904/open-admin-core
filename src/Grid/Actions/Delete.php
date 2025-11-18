@@ -34,7 +34,7 @@ class Delete extends RowAction
         $options  = [
             "type" => "warning",
             "showCancelButton"=> true,
-            "confirmButtonColor"=> "#DD6B55",
+            "confirmButtonColor"=> "#60dd55ff",
             "confirmButtonText"=> __('confirm'),
             "showLoaderOnConfirm"=> true,
             "cancelButtonText"=>  __('cancel'),

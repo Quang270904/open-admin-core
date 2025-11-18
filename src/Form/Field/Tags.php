@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form\Field;
+use OpenAdminCore\Admin\Form\Field;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -37,6 +37,7 @@ class Tags extends Field
     /**
      * @var array<string>
      */
+    protected $separators = [',', ';', '，', '；', ' '];
     protected static $css = [
         '/vendor/open-admin/AdminLTE/plugins/select2/select2.min.css',
     ];
@@ -116,6 +117,25 @@ class Tags extends Field
     }
 
     /**
+     * Set Tag Separators.
+     *
+     * @param array $separators
+     *
+     * @return $this
+     */
+    public function separators($separators = [])
+    {
+        if ($separators instanceof Collection or $separators instanceof Arrayable) {
+            $separators = $separators->toArray();
+        }
+        if (!empty($separators)) {
+            $this->separators = $separators;
+        }
+
+        return $this;
+    }
+
+    /**
      * Set save Action.
      *
      * @param \Closure $saveAction
@@ -137,7 +157,7 @@ class Tags extends Field
      */
     public function prepare($value)
     {
-        /** @phpstan-ignore-next-line Parameter #2 $callback of function array_filter expects (callable(mixed): bool)|null, 'strlen' given.*/
+        $value = parent::prepare($value);
         $value = array_filter($value, 'strlen');
 
         if ($this->keyAsValue) {

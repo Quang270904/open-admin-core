@@ -1,17 +1,25 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form\Field;
+
+use OpenAdminCore\Admin\Form\Field;
+use OpenAdminCore\Admin\Form\Field\Traits\HasValuePicker;
+use OpenAdminCore\Admin\Form\Field\Traits\PlainInput;
 
 class Text extends Field
 {
     use PlainInput;
+    use HasValuePicker;
 
     /**
      * @var string|null
      */
     protected $icon = 'fa-pencil';
+    /**
+     * @var bool
+     */
+    protected $withoutIcon = false;
 
     /**
      * Set custom fa-icon.
@@ -29,28 +37,36 @@ class Text extends Field
 
     /**
      * Render this filed.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function render()
-    {
-        $this->initPlainInput();
+{
+    $this->initPlainInput();
 
-        if(isset($this->icon)){
+    if (!isset($this->withoutIcon) || !$this->withoutIcon) {
+        if (isset($this->icon)) {
             $this->prepend('<i class="fa '.$this->icon.' fa-fw"></i>');
         }
-        $this->defaultAttribute('type', 'text')
+    }
+
+    $this->defaultAttribute('type', 'text')
         ->defaultAttribute('id', $this->id)
         ->defaultAttribute('name', $this->elementName ?: $this->formatName($this->column))
-        ->defaultAttribute('value', $this->getOld())
+        ->defaultAttribute('value', $this->getOld()) // xử lý value thống nhất
         ->defaultAttribute('class', 'form-control '.$this->getElementClassString())
         ->defaultAttribute('placeholder', $this->getPlaceholder());
 
-        $this->addVariables([
-            'prepend' => $this->prepend,
-            'append'  => $this->append,
-        ]);
+        if (method_exists($this, 'mountPicker')) {
+            $this->mountPicker();
+        }
+    $this->addVariables([
+        'prepend' => $this->prepend,
+        'append'  => $this->append,
+    ]);
 
-        return parent::render();
-    }
+    return parent::render();
+}
 
     /**
      * Add inputmask to an elements.
@@ -63,7 +79,8 @@ class Text extends Field
     {
         $options = json_encode_options($options);
 
-        $this->script = "$('{$this->getElementClassSelector()}').inputmask($options);";
+        //$this->script = "$('{$this->getElementClassSelector()}').inputmask($options);";
+        $this->script = "Inputmask({$options}).mask(document.querySelector(\"{$this->getElementClassSelector()}\"));";
 
         return $this;
     }
@@ -71,7 +88,7 @@ class Text extends Field
     /**
      * Add datalist element to Text input.
      *
-     * @param array<mixed> $entries
+     * @param array $entries
      *
      * @return $this
      */
@@ -86,5 +103,17 @@ class Text extends Field
         $datalist .= '</datalist>';
 
         return $this->append($datalist);
+    }
+
+    /**
+     * show no icon in font of input.
+     *
+     * @return $this
+     */
+    public function withoutIcon()
+    {
+        $this->withoutIcon = true;
+
+        return $this;
     }
 }

@@ -20,29 +20,41 @@
 
         delete_do : function(resource_url,navigate_url){
 
-            Swal.fire({
+             Swal.fire({
                 title: __('delete_confirm'),
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: __('confirm'),
                 showLoaderOnConfirm: true,
-                cancelButtonText:  __('cancel'),
-                preConfirm: function() {
-                    return new Promise(function(resolve) {
+                cancelButtonText: __('cancel'),
+                preConfirm: function () {
+                    return new Promise(function (resolve) {
                         let url = resource_url;
-                        let data = {_method:'delete'};
-                        admin.ajax.post(url,data,function(data){
+                        let data = { _method: 'delete' };
+                        $('.swal2-cancel').hide();
+
+                        admin.ajax.post(url, data, function (data) {
                             resolve(data);
-                            if (navigate_url){
+
+                            if (navigate_url) {
                                 admin.ajax.navigate(navigate_url);
-                            }else{
+                            } else {
                                 admin.ajax.reload();
                             }
                         });
                     });
                 }
-            }).then(admin.resource.default_swal_response);
+            }).then(function(result) {
+                var data = result.value;
+                if (typeof data === 'object') {
+                    if (data.status) {
+                        swal(data.message || '削除しました！', '', 'success');
+                    } else {
+                        swal(data.message || '削除に失敗しました。', '', 'error');
+                    }
+                }
+            });
         },
 
         batch_edit : function (resource_url){

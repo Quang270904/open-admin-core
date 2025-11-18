@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Traits;
+namespace OpenAdminCore\Admin\Traits;
 
 trait Resizable
 {

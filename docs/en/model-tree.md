@@ -25,8 +25,8 @@ The corresponding model is `app/Models/Category.php`:
 
 namespace App\Models\Demo;
 
-use Encore\Admin\Traits\AdminBuilder;
-use Encore\Admin\Traits\ModelTree;
+use OpenAdminCore\Admin\Traits\AdminBuilder;
+use OpenAdminCore\Admin\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
@@ -44,8 +44,8 @@ Table structure in the three fields `parent_id`,` order`, `title` field name can
 
 namespace App\Models\Demo;
 
-use Encore\Admin\Traits\AdminBuilder;
-use Encore\Admin\Traits\ModelTree;
+use OpenAdminCore\Admin\Traits\AdminBuilder;
+use OpenAdminCore\Admin\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
@@ -76,11 +76,11 @@ namespace App\Admin\Controllers\Demo;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use Encore\Admin\Form;
-use Encore\Admin\Facades\Admin;
-use Encore\Admin\Layout\Content;
-use Encore\Admin\Controllers\ModelForm;
-use Encore\Admin\Tree;
+use OpenAdminCore\Admin\Form;
+use OpenAdminCore\Admin\Facades\Admin;
+use OpenAdminCore\Admin\Layout\Content;
+use OpenAdminCore\Admin\Controllers\ModelForm;
+use OpenAdminCore\Admin\Tree;
 
 class CategoryController extends Controller
 {

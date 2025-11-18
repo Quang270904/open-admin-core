@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Form;
+namespace OpenAdminCore\Admin\Form;
 
-use Encore\Admin\Admin;
+use OpenAdminCore\Admin\Admin;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Arr;
 
@@ -55,6 +55,16 @@ class Footer implements Renderable
     ];
 
     /**
+     * @var string
+     */
+    protected $defaultCheck;
+
+    /**
+     * @var string
+     */
+    public $fixedFooter = true;
+
+    /**
      * Available footer checks.
      * 
      * $submitRedirects : [
@@ -86,7 +96,7 @@ class Footer implements Renderable
         $this->builder = $builder;
 
         // set default submitRedirects
-        foreach($this->checkboxes as $value => $key){
+        foreach ($this->checkboxes as $value => $key) {
             $this->enableCheck($key, $value);
         }
     }
@@ -200,7 +210,7 @@ class Footer implements Renderable
 
         return $this;
     }
-    
+
     /**
      * Disable Checkbox.
      * @param string $key
@@ -209,7 +219,7 @@ class Footer implements Renderable
      */
     protected function disableCheck($key)
     {
-        $this->submitRedirects = array_filter($this->submitRedirects, function($submitRedirect) use($key){
+        $this->submitRedirects = array_filter($this->submitRedirects, function ($submitRedirect) use ($key) {
             return Arr::get($submitRedirect, 'key') == $key;
         });
 
@@ -224,12 +234,12 @@ class Footer implements Renderable
      */
     public function defaultCheck($key)
     {
-        foreach($this->submitRedirects as &$submitRedirect){
-            if(Arr::get($submitRedirect, 'key') == $key){
+        foreach ($this->submitRedirects as &$submitRedirect) {
+            if (Arr::get($submitRedirect, 'key') == $key) {
                 $submitRedirect['default'] = true;
             }
         }
-        
+
         return $this;
     }
 
@@ -264,49 +274,49 @@ class Footer implements Renderable
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|string|null
      */
-    public function getRedirect($resourcesPath, $key, $afterSaveValue){
+    public function getRedirect($resourcesPath, $key, $afterSaveValue)
+    {
         // set submitRedirects
         $formId = request()->get('formid');
         $redirectDashboard = request()->get('redirect-dashboard');
         $redirectCamera = request()->get('redirect-camera');
-        foreach($this->submitRedirects as $submitRedirect){
-            if(Arr::get($submitRedirect, 'value') == $afterSaveValue){
+        foreach ($this->submitRedirects as $submitRedirect) {
+            if (Arr::get($submitRedirect, 'value') == $afterSaveValue) {
                 $url = Arr::get($submitRedirect, 'redirect');
                 break;
             }
         }
 
-        if(!isset($url) || $formId){
+        if (!isset($url) || $formId) {
             if ($afterSaveValue == 1) {
                 // continue editing
                 if ($formId) {
-                    $url = rtrim($resourcesPath, '/')."/{$key}/edit?after-save=1&formid=" . $formId;
+                    $url = rtrim($resourcesPath, '/') . "/{$key}/edit?after-save=1&formid=" . $formId;
                 } else {
-                    $url = rtrim($resourcesPath, '/')."/{$key}/edit?after-save=1";
+                    $url = rtrim($resourcesPath, '/') . "/{$key}/edit?after-save=1";
                 }
             } elseif ($afterSaveValue == 2) {
                 // continue creating
-                $url = rtrim($resourcesPath, '/').'/create?after-save=2';
+                $url = rtrim($resourcesPath, '/') . '/create?after-save=2';
             } elseif ($afterSaveValue == 3) {
                 // view resource
-                $url = rtrim($resourcesPath, '/')."/{$key}";
+                $url = rtrim($resourcesPath, '/') . "/{$key}";
             } elseif ($redirectDashboard) {
                 // dashboard
                 $url = admin_url('');
             } elseif ($formId && $redirectCamera) {
                 // camera
-                $url = rtrim($resourcesPath, '/')."/{$key}/edit?redirect-camera=1&formid=" . $formId;
+                $url = rtrim($resourcesPath, '/') . "/{$key}/edit?redirect-camera=1&formid=" . $formId;
             }
         }
 
-        
-        if(!isset($url)){
+
+        if (!isset($url)) {
             return null;
         }
-        if(is_string($url)){
+        if (is_string($url)) {
             return redirect($url);
-        }
-        elseif($url instanceof \Closure){
+        } elseif ($url instanceof \Closure) {
             return $url($resourcesPath, $key);
         }
         return $url;
@@ -349,8 +359,56 @@ EOT;
             $('#admin-submit').click(function(){setTimeout(function() {waitForElm(".hidden-xs").then(async (elm) => {$('[role="scanButtonDashboard"]').click();})},2000);});
             EOT;
         }
-        
-        Admin::script($script);
+        if ($script !== null) {
+            Admin::script($script);
+        }
+    }
+    /**
+     * Set `view` as default check.
+     *
+     * @return $this
+     */
+    public function checkView()
+    {
+        $this->defaultCheck = 'view';
+
+        return $this;
+    }
+
+    /**
+     * Set `continue_creating` as default check.
+     *
+     * @return $this
+     */
+    public function checkCreating()
+    {
+        $this->defaultCheck = 'continue_creating';
+
+        return $this;
+    }
+
+    /**
+     * Set `continue_editing` as default check.
+     *
+     * @return $this
+     */
+    public function checkEditing()
+    {
+        $this->defaultCheck = 'continue_editing';
+
+        return $this;
+    }
+
+    /**
+     * Set `continue_editing` as default check.
+     *
+     * @return $this
+     */
+    public function fixedFooter($set = true)
+    {
+        $this->fixedFooter = $set;
+
+        return $this;
     }
 
     /**
@@ -361,16 +419,23 @@ EOT;
     public function render()
     {
         $this->setupScript();
-
-        $data = [
-            'buttons'      => $this->buttons,
-            'checkboxes'   => $this->checkboxes,
-            'width'        => $this->builder->getWidth(),
-            'submitLabel'  => $this->submitLabel ?? static::$defaultSubmitLabel ?? trans('admin.submit'),
-            'submitRedirects'=> $this->submitRedirects,
-            'default_check'    => $this->getDefaultCheck(),
+        $submitRedirects = [
+            'continue_editing' => 'continue_editing',
+            'continue_creating' => 'continue_creating',
+            'view' => 'view',
+            //'exit' => 'exit', // can be exit as well when doing ajax request
         ];
 
+        $data = [
+            'width' => $this->builder->getWidth(),
+            'buttons' => $this->buttons,
+            'checkboxes' => $this->checkboxes,
+            'submit_redirects' => $submitRedirects,
+            'submitLabel' => $this->submitLabel ?? static::$defaultSubmitLabel ?? trans('admin.submit'),
+            'submitRedirects' => $this->submitRedirects,
+            'default_check' => $this->getDefaultCheck(),
+            'fixedFooter' => $this->fixedFooter,
+        ];
         return view($this->view, $data);
     }
 
@@ -380,16 +445,17 @@ EOT;
      *
      * @return ?string
      */
-    protected function getDefaultCheck(){
-        if(!is_null($result = old('after-save'))){
+    protected function getDefaultCheck()
+    {
+        if (!is_null($result = old('after-save'))) {
             return $result;
         }
-        if(!is_null($result = request()->get('after-save'))){
+        if (!is_null($result = request()->get('after-save'))) {
             return $result;
         }
 
         foreach ($this->submitRedirects as $submitRedirect) {
-            if(boolval(Arr::get($submitRedirect, 'default'))){
+            if (boolval(Arr::get($submitRedirect, 'default'))) {
                 return Arr::get($submitRedirect, 'value');
             }
         }

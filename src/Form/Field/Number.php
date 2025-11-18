@@ -1,21 +1,26 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Validator\DigitBetweenRule;
-use Encore\Admin\Validator\DigitMinRule;
-use Encore\Admin\Validator\DigitMaxRule;
+use OpenAdminCore\Admin\Form\Field\Traits\HasNumberModifiers;
+use OpenAdminCore\Admin\Validator\DigitBetweenRule;
+use OpenAdminCore\Admin\Validator\DigitMinRule;
+use OpenAdminCore\Admin\Validator\DigitMaxRule;
 
 class Number extends Text
 {
-    protected $rules = ['nullable', 'numeric'];
+    use HasNumberModifiers;
 
+    protected $rules = ['nullable', 'numeric'];
     protected static $js = [
         '/vendor/open-admin/number-input/bootstrap-number-input.js',
     ];
 
     public function render()
     {
+        $this->defaultAttribute('type', 'number');
+        // $this->append("<i class='fa fa-plus plus'></i>");
+        // $this->prepend("<i class='fa fa-minus minus'></i>");
         $this->default($this->default);
 
         $this->script = <<<EOT
@@ -67,7 +72,7 @@ EOT;
         return $this;
     }
 
-    
+
 
     /**
      * Set min and max value of number field. 
@@ -83,10 +88,10 @@ EOT;
         $this->attribute('min', $min);
         $this->attribute('max', $max);
 
-        $this->rules([new DigitBetweenRule($min,$max)]);
+        $this->rules([new DigitBetweenRule($min, $max)]);
 
         return $this;
     }
 
-    
+
 }

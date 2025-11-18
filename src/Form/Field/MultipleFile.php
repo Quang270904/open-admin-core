@@ -1,14 +1,17 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form\Field;
+use OpenAdminCore\Admin\Form\Field;
 use Illuminate\Support\Arr;
+use OpenAdminCore\Admin\Form\Field\Traits\HasMediaPicker;
+// use OpenAdminCore\Admin\Form\Field\Traits\UploadField;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MultipleFile extends Field
 {
     use UploadField;
+    use HasMediaPicker;
 
     /**
      * Css.
@@ -16,7 +19,7 @@ class MultipleFile extends Field
      * @var array<string>
      */
     protected static $css = [
-        // '/vendor/open-admin/bootstrap-fileinput/css/fileinput.min.css?v=4.5.2',
+        '/vendor/open-admin/fields/file-upload/file-upload.css',
     ];
 
     /**
@@ -44,6 +47,10 @@ class MultipleFile extends Field
      */
     protected $fileIndex = null;
 
+    public $must_prepare = true;
+    public $type = 'file';
+    public $readonly = false;
+    public $multiple = true;
     /**
      * Create a new File instance.
      *
@@ -53,6 +60,7 @@ class MultipleFile extends Field
     public function __construct($column, $arguments = [])
     {
         $this->initStorage();
+        $this->must_prepare = true;
 
         parent::__construct($column, $arguments);
     }
@@ -76,10 +84,6 @@ class MultipleFile extends Field
     public function getValidator(array $input)
     {
         if (request()->has(static::FILE_DELETE_FLAG)) {
-            return false;
-        }
-
-        if (request()->has(static::FILE_SORT_FLAG)) {
             return false;
         }
 
@@ -116,8 +120,8 @@ class MultipleFile extends Field
         $rules = $input = [];
 
         foreach ($value as $key => $file) {
-            $rules[$this->column.$key] = $this->getRules();
-            $input[$this->column.$key] = $file;
+            $rules[$this->column . $key] = $this->getRules();
+            $input[$this->column . $key] = $file;
         }
 
         return [$rules, $input];
@@ -130,18 +134,44 @@ class MultipleFile extends Field
      *
      * @return array<mixed>
      */
-    protected function sortFiles($order)
+    protected function sortFiles($order, $updated_files)
     {
-        $order = explode(',', $order);
-
-        $new = [];
-        $original = $this->original();
-
-        foreach ($order as $item) {
-            $new[] = Arr::get($original, $item);
+        $order = explode(',', trim($order, ','));
+        if ($updated_files === false) {
+            $updated_files = $this->original();
         }
 
-        return $new;
+        usort($updated_files, function ($a, $b) use ($order) {
+            $pos_a = array_search($a, $order);
+            $pos_b = array_search($b, $order);
+
+            if ($pos_a === false || $pos_b === false) {
+                return 0;
+            }
+
+            return ($pos_a < $pos_b) ? -1 : 1;
+        });
+
+        return $updated_files;
+    }
+
+    /**
+     * Add files.
+     *
+     * @param string $files
+     *
+     * @return array
+     */
+    protected function addFiles($add, $updated_files)
+    {
+        $add = explode(',', trim($add, ','));
+        if ($updated_files === false) {
+            $updated_files = $this->original();
+        }
+
+        $updated_files = array_merge($updated_files, $add);
+
+        return $updated_files;
     }
 
     /**
@@ -171,14 +201,17 @@ class MultipleFile extends Field
             return $this->sortFiles($files);
         }
 
-        if(is_string($files)){
+        if (is_string($files)) {
             $files = [$files];
         }
         $targets = array_map([$this, 'prepareForeach'], $files);
-        
+
         // get original
         $original = $this->original();
-        if(is_string($original)){
+        
+        if (is_null($original)) {
+            $original = [];
+        } elseif (is_string($original)) {
             $original = [$original];
         }
 
@@ -193,6 +226,7 @@ class MultipleFile extends Field
         if (empty($this->original)) {
             return [];
         }
+        $this->original = $this->fixIfJsonString($this->original);
 
         return $this->original;
     }
@@ -221,10 +255,19 @@ class MultipleFile extends Field
     protected function preview()
     {
         $files = $this->value ?: [];
-        if(is_string($files)){
+        if (is_string($files)) {
             $files = [$files];
         }
         return array_values(array_map([$this, 'objectUrl'], $files));
+    }
+
+    public function fixIfJsonString($arr)
+    {
+        if (!empty($arr) && !is_array($arr)) {
+            $arr = json_decode($arr);
+        }
+
+        return $arr;
     }
 
     /**
@@ -264,7 +307,7 @@ class MultipleFile extends Field
      */
     protected function initialFileIndex($index, $file)
     {
-        if($this->fileIndex instanceof \Closure){
+        if ($this->fileIndex instanceof \Closure) {
             return $this->fileIndex->call($this, $index, $file);
         }
         return $index;
@@ -280,7 +323,7 @@ class MultipleFile extends Field
      */
     protected function initialCaption($caption, $key)
     {
-        if($this->caption instanceof \Closure){
+        if ($this->caption instanceof \Closure) {
             return $this->caption->call($this, $caption, $key);
         }
         return basename($caption);
@@ -292,8 +335,8 @@ class MultipleFile extends Field
     protected function initialPreviewConfig()
     {
         $files = $this->value ?: [];
-        
-        if(is_string($files)){
+
+        if (is_string($files)) {
             $files = [$files];
         }
 
@@ -366,7 +409,7 @@ $("{$this->getElementClassSelector()}").on('filebeforedelete', function() {
     });
 });
 EOT;
-            if(isset($this->options['deletedEvent'])){
+            if (isset($this->options['deletedEvent'])) {
                 $deletedEvent = $this->options['deletedEvent'];
                 $this->script .= <<<EOT
                 $("{$this->getElementClassSelector()}").on('filedeleted', function(event, key, jqXHR, data) {

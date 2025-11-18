@@ -1,15 +1,17 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Admin;
-use Encore\Admin\Form\Field;
+use Illuminate\Support\Arr;
+use OpenAdminCore\Admin\Form\Field;
+use OpenAdminCore\Admin\Form\Field\Traits\Sortable;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Support\Arr;
 
 class KeyValue extends Field
 {
+    use Sortable;
+
     /**
      * @var array<string, string>
      */
@@ -89,6 +91,11 @@ SCRIPT;
      */
     public function prepare($value)
     {
+        $value = parent::prepare($value);
+        if (empty($value)) {
+            return [];
+        }
+
         return array_combine($value['keys'], $value['values']);
     }
 
@@ -97,9 +104,10 @@ SCRIPT;
      */
     public function render()
     {
-        $this->setupScript();
+        $this->addSortable('.kv-', '-table');
+        view()->share('options', $this->options);
 
-        Admin::style('td .form-group {margin-bottom: 0 !important;}');
+        $this->setupScript();
 
         return parent::render();
     }

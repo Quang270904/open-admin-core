@@ -3,16 +3,18 @@
 namespace DummyNamespace;
 
 use App\Http\Controllers\Controller;
-use Encore\Admin\Controllers\Dashboard;
-use Encore\Admin\Layout\Column;
-use Encore\Admin\Layout\Content;
-use Encore\Admin\Layout\Row;
+use OpenAdminCore\Admin\Admin;
+use OpenAdminCore\Admin\Controllers\Dashboard;
+use OpenAdminCore\Admin\Layout\Column;
+use OpenAdminCore\Admin\Layout\Content;
+use OpenAdminCore\Admin\Layout\Row;
 
 class HomeController extends Controller
 {
     public function index(Content $content)
     {
         return $content
+            ->css_file(Admin::asset("open-admin/css/pages/dashboard.css"))
             ->title('Dashboard')
             ->description('Description...')
             ->row(Dashboard::title())

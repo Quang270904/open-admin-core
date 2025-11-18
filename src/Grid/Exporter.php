@@ -1,9 +1,9 @@
 <?php
 
-namespace Encore\Admin\Grid;
+namespace OpenAdminCore\Admin\Grid;
 
-use Encore\Admin\Grid;
-use Encore\Admin\Grid\Exporters\CsvExporter;
+use OpenAdminCore\Admin\Grid;
+use OpenAdminCore\Admin\Grid\Exporters\CsvExporter;
 
 class Exporter
 {
@@ -32,6 +32,11 @@ class Exporter
      * @var string
      */
     public static $queryName = '_export_';
+
+    /**
+     * @var Grid\Exporters\AbstractExporter
+     */
+    protected static $exporter;
 
     /**
      * Create a new Exporter instance.
@@ -94,11 +99,15 @@ class Exporter
      */
     protected function getExporter($driver)
     {
-        if (!array_key_exists($driver, static::$drivers)) {
-            return $this->getDefaultExporter();
+        if (static::$exporter) {
+            return static::$exporter;
         }
 
-        return new static::$drivers[$driver]($this->grid);
+        if (!array_key_exists($driver, static::$drivers)) {
+            return static::$exporter = $this->getDefaultExporter();
+        }
+
+        return static::$exporter = new static::$drivers[$driver]($this->grid);
     }
 
     /**

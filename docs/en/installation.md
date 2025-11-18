@@ -6,12 +6,12 @@ First, install laravel, and make sure that the database connection settings are 
 
 Then install require this package with command:
 ```
-composer require encore/laravel-admin "1.5.*"
+composer require OpenAdminCore/laravel-admin "1.5.*"
 ```
 
 Publish assets and config with command：
 ```
-php artisan vendor:publish --provider="Encore\Admin\AdminServiceProvider"
+php artisan vendor:publish --provider="OpenAdminCore\Admin\AdminServiceProvider"
 ```
 
 After runnung previous command you can find config file in `config/admin.php`, in this file you can change default install directory (```/app/Admin```), db connection or table names.

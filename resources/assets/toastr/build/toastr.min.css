@@ -3,6 +3,7 @@
 }
 
 .toast-message {
+    font-size: 14px;
     -ms-word-wrap: break-word;
     word-wrap: break-word
 }

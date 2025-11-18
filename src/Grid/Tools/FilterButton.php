@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Grid\Tools;
+namespace OpenAdminCore\Admin\Grid\Tools;
 
-use Encore\Admin\Admin;
+use OpenAdminCore\Admin\Admin;
 
 class FilterButton extends AbstractTool
 {
@@ -17,7 +17,7 @@ class FilterButton extends AbstractTool
     protected $btnClassName;
 
     /**
-     * @return \Encore\Admin\Grid\Filter
+     * @return \OpenAdminCore\Admin\Grid\Filter
      */
     protected function filter()
     {
@@ -78,12 +78,12 @@ class FilterButton extends AbstractTool
                         target.attr('disabled', false).addClass('loaded');
                         target.find('.fa-spinner').remove();
                         $('#{$id}').removeClass('hide');
-                        Exment.CustomScriptEvent.bindSubmitButtons();
+                        // Exment.CustomScriptEvent.bindSubmitButtons();
                     }
                 });
             } else {
                 $('#{$id}').removeClass('hide');
-            Exment.CustomScriptEvent.bindSubmitButtons();
+            // Exment.CustomScriptEvent.bindSubmitButtons();
             }
         }
     });

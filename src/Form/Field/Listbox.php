@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
 /**
  * Class ListBox.
@@ -34,7 +34,7 @@ class Listbox extends MultipleSelect
      */
     public function settings(array $settings)
     {
-        $this->settings = $settings;
+        $this->settings = array_merge($this->settings, $settings);
 
         return $this;
     }
@@ -46,11 +46,12 @@ class Listbox extends MultipleSelect
      *
      * @return Listbox
      */
-    public function height($height = 100)
+    public function height($height = 200)
     {
-        return $this->settings(['selectorMinimalHeight' => $height]);
-    }
+        $this->settings(['minHeight' => $height]);
 
+        return $this;
+    }
     /**
      * {@inheritdoc}
      * @param string $url
@@ -93,15 +94,15 @@ EOT;
      */
     public function render()
     {
-        $settings = array_merge($this->settings, [
-            'infoText'          => trans('admin.listbox.text_total'),
-            'infoTextEmpty'     => trans('admin.listbox.text_empty'),
-            'infoTextFiltered'  => trans('admin.listbox.filtered'),
-            'filterTextClear'   => trans('admin.listbox.filter_clear'),
-            'filterPlaceHolder' => trans('admin.listbox.filter_placeholder'),
+        $this->style('width', '100%');
+
+        $settings = array_merge([
+            'availableTitle' => trans('admin.listbox.title_available'),
+            'selectedTitle' => trans('admin.listbox.title_selected'),
+            'minHeight' => 200,
             // Sometimes, click not working, so double click is false
             'moveOnDoubleClick' => false,
-        ]);
+        ], $this->settings);
 
         $settings = json_encode($settings);
 
@@ -130,7 +131,7 @@ EOT;
 
 SCRIPT;
 
-        $this->attribute('data-value', implode(',', (array) $this->value()));
+        //$this->attribute('data-value', implode(',', (array) $this->value()));
 
         return parent::render();
     }

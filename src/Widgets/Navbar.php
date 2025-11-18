@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Widgets;
+namespace OpenAdminCore\Admin\Widgets;
 
-use Encore\Admin\Widgets\Navbar\RefreshButton;
+use OpenAdminCore\Admin\Widgets\Navbar\RefreshButton;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Renderable;
 
@@ -20,7 +20,8 @@ class Navbar implements Renderable
     {
         $this->elements = [
             'left'  => collect(),
-            'right' => collect(),
+            'right' => collect()
+            ,
         ];
     }
 

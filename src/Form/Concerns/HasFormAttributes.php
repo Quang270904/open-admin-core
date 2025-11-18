@@ -7,6 +7,20 @@ use Illuminate\Support\Arr;
 trait HasFormAttributes
 {
     /**
+     * unique class name for class selector
+     * 
+     * @var string
+     */
+    protected $uniqueName;
+
+    /**
+     * If the form horizontal layout.
+     *
+     * @var bool
+     */
+    protected $horizontal = true;
+
+    /**
      * @var array
      */
     protected $attributes = [];
@@ -20,6 +34,59 @@ trait HasFormAttributes
      * @var bool
      */
     protected $validateClientSide = false;
+
+    /**
+     * Set unique class name for class selector
+     * @param string $uniqueName
+     *
+     * @return  $this
+     */ 
+    public function setUniqueName($uniqueName)
+    {
+        $this->uniqueName = $uniqueName;
+        return $this;
+    }
+
+    /**
+     * Get unique class name for class selector
+     *
+     * @return  string
+     */ 
+    public function getUniqueName()
+    {
+        if(!$this->uniqueName){
+            $this->uniqueName = 'form-' . mb_substr(md5(uniqid()), 0, 32);
+        }
+        return $this->uniqueName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHorizontal()
+    {
+        return $this->horizontal;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setHorizontal(bool $horizontal)
+    {
+        $this->horizontal = $horizontal;
+        
+        return $this; 
+    }
+
+    /**
+     * @return $this
+     */
+    public function disableHorizontal()
+    {
+        $this->horizontal = false;
+
+        return $this;
+    }
 
     /**
      * Initialize the form attributes.
@@ -41,20 +108,62 @@ trait HasFormAttributes
     /**
      * Add form attributes.
      *
-     * @param string|array $attr
-     * @param string       $value
+     * @param string|array<mixed> $attr
+     * @param string|int       $value
      *
      * @return $this
      */
     public function attribute($attr, $value = '')
     {
         if (is_array($attr)) {
-            foreach ($attr as $key => $value) {
-                $this->attribute($key, $value);
+            foreach ($attr as $key => $val) {
+                if($key == 'class'){
+                    $this->setClass($val);
+                } else{
+                    $this->attribute($key, $val);
+                }
             }
         } else {
-            $this->attributes[$attr] = $value;
+            if ($attr === 'class') {
+                $this->setClass($value);
+            } else {
+                $this->attributes[$attr] = $value;
+            }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * set class
+     *
+     * @param string|array<mixed> $value
+     * @return $this
+     */
+    public function setClass($value)
+    {
+        $result = explode_ex(' ', Arr::get($this->attributes, 'class'));
+
+        if (is_string($value)) {
+            $value = explode_ex(' ', $value);
+        }
+        foreach ($value as $v) {
+            if (empty($v)) {
+                continue;
+            }
+            $result[] = $v;
+        }
+
+        $result = implode(' ', array_unique($result));
+        $this->attributes['class'] = $result;
 
         return $this;
     }
@@ -123,7 +232,7 @@ trait HasFormAttributes
     public function enableValidate()
     {
         $this->validateClientSide = true;
-        $this->attribute('novalidate', true);
+        // $this->attribute('novalidate', true);
         $this->addFormClass('needs-validation');
 
         return $this;

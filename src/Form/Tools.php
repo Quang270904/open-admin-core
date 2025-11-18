@@ -1,8 +1,8 @@
 <?php
 
-namespace Encore\Admin\Form;
+namespace OpenAdminCore\Admin\Form;
 
-use Encore\Admin\Facades\Admin;
+use OpenAdminCore\Admin\Facades\Admin;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Collection;
@@ -209,7 +209,7 @@ class Tools implements Renderable
 
         return <<<EOT
 <div class="btn-group pull-right" style="margin-right: 5px">
-    <a href="{$url}" class="btn btn-sm btn-default d-flex align-items-center p-2" title="$text"><i class="fa fa-list p-1"></i><span class="d-none d-md-inline">&nbsp;$text</span></a>
+    <a href="{$url}" class="btn btn-sm btn-default d-flex align-items-center" title="$text"><i class="fa fa-list p-1"></i><span class="d-none d-md-inline">&nbsp;$text</span></a>
 </div>
 EOT;
     }
@@ -226,7 +226,7 @@ EOT;
 
         return <<<HTML
 <div class="btn-group pull-right" style="margin-right: 5px">
-    <a href="{$url}" class="btn btn-sm btn-primary d-flex align-items-center p-2" title="{$view}">
+    <a href="{$url}" class="btn btn-sm btn-primary d-flex align-items-center" title="{$view}">
         <i class="fa fa-eye p-1"></i><span class="d-none d-md-inline"> {$view}</span>
     </a>
 </div>
@@ -275,7 +275,7 @@ $('.{$class}-delete').unbind('click').click(function() {
                         _token:LA.token,
                     },
                     success: function (data) {
-                        $.pjax({container:'#pjax-container', url: '{$listUrl}' });
+                        window.location.href = '{$listUrl}';
 
                         resolve(data);
                     }
@@ -300,8 +300,8 @@ SCRIPT;
 
         return <<<HTML
 <div class="btn-group pull-right" style="margin-right: 5px">
-    <a href="javascript:void(0);" class="btn p-1 btn-sm btn-danger d-flex align-items-center {$class}-delete" title="{$trans['delete']}">
-        <i class="fa fa-trash p-1"></i><span class="d-none d-md-inline p-1">  {$trans['delete']}</span>
+    <a href="javascript:void(0);" class="btn btn-sm btn-danger d-flex align-items-center {$class}-delete" title="{$trans['delete']}">
+        <i class="fa fa-trash p-1"></i><span class="d-none d-md-inline">  {$trans['delete']}</span>
     </a>
 </div>
 HTML;

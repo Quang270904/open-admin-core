@@ -1,9 +1,9 @@
 <?php
 
-namespace Encore\Admin\Grid\Tools;
+namespace OpenAdminCore\Admin\Grid\Tools;
 
-use Encore\Admin\Admin;
-use Encore\Admin\Grid;
+use OpenAdminCore\Admin\Admin;
+use OpenAdminCore\Admin\Grid;
 
 class ExportButton extends AbstractTool
 {
@@ -75,7 +75,7 @@ SCRIPT;
 
 <div class="btn-group pull-right" style="margin-right: 10px">
     <a class="btn btn-sm btn-info" title="{$trans['export']}"><i class="fa fa-download"></i><span class="d-none d-md-inline"> {$trans['export']}</span></a>
-    <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown">
+    <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown">
         <span class="caret"></span>
         <span class="sr-only">Toggle Dropdown</span>
     </button>

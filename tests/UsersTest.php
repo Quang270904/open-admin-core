@@ -1,6 +1,6 @@
 <?php
 
-use Encore\Admin\Auth\Database\Administrator;
+use OpenAdminCore\Admin\Auth\Database\Administrator;
 
 class UsersTest extends TestCase
 {

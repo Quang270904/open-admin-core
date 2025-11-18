@@ -2,16 +2,16 @@
     <ul class="nav nav-tabs nav-tabs">
 
         @foreach($tabs as $id => $tab)
-            @if($tab['type'] == \Encore\Admin\Widgets\Tab::TYPE_CONTENT)
-                <li {{ $id == $active ? 'class=active' : '' }}><a href="#tab_{{ $tab['id'] }}" data-toggle="tab">{{ $tab['title'] }}</a></li>
-            @elseif($tab['type'] == \Encore\Admin\Widgets\Tab::TYPE_LINK)
+            @if($tab['type'] == \OpenAdminCore\Admin\Widgets\Tab::TYPE_CONTENT)
+                <li {{ $id == $active ? 'class=active' : '' }}><a href="#tab_{{ $tab['id'] }}" data-bs-toggle="tab">{{ $tab['title'] }}</a></li>
+            @elseif($tab['type'] == \OpenAdminCore\Admin\Widgets\Tab::TYPE_LINK)
                 <li {{ $id == $active ? 'class=active' : '' }}><a href="{{ $tab['href'] }}">{{ $tab['title'] }}</a></li>
             @endif
         @endforeach
 
         @if (!empty($dropDown))
         <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#">
                 Dropdown <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">

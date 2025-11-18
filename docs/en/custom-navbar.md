@@ -2,9 +2,9 @@
 
 Since version `1.5.6`, you can add the html element to the top navigation bar, open `app/Admin/bootstrap.php`:
 ```php
-use Encore\Admin\Facades\Admin;
+use OpenAdminCore\Admin\Facades\Admin;
 
-Admin::navbar(function (\Encore\Admin\Widgets\Navbar $navbar) {
+Admin::navbar(function (\OpenAdminCore\Admin\Widgets\Navbar $navbar) {
 
     $navbar->left('html...');
 
@@ -102,7 +102,7 @@ $navbar->right(new \App\Admin\Extensions\Nav\Links());
 Or use the following html to add a drop-down menu:
 ```html
 <li class="dropdown notifications-menu">
-<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+<a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
   <i class="fa fa-bell-o"></i>
   <span class="label label-warning">10</span>
 </a>

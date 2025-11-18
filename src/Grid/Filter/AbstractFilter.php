@@ -1,16 +1,16 @@
 <?php
 
-namespace Encore\Admin\Grid\Filter;
+namespace OpenAdminCore\Admin\Grid\Filter;
 
-use Encore\Admin\Facades\Admin;
-use Encore\Admin\Grid\Filter;
-use Encore\Admin\Grid\Filter\Presenter\Checkbox;
-use Encore\Admin\Grid\Filter\Presenter\DateTime;
-use Encore\Admin\Grid\Filter\Presenter\MultipleSelect;
-use Encore\Admin\Grid\Filter\Presenter\Presenter;
-use Encore\Admin\Grid\Filter\Presenter\Radio;
-use Encore\Admin\Grid\Filter\Presenter\Select;
-use Encore\Admin\Grid\Filter\Presenter\Text;
+use OpenAdminCore\Admin\Facades\Admin;
+use OpenAdminCore\Admin\Grid\Filter;
+use OpenAdminCore\Admin\Grid\Filter\Presenter\Checkbox;
+use OpenAdminCore\Admin\Grid\Filter\Presenter\DateTime;
+use OpenAdminCore\Admin\Grid\Filter\Presenter\MultipleSelect;
+use OpenAdminCore\Admin\Grid\Filter\Presenter\Presenter;
+use OpenAdminCore\Admin\Grid\Filter\Presenter\Radio;
+use OpenAdminCore\Admin\Grid\Filter\Presenter\Select;
+use OpenAdminCore\Admin\Grid\Filter\Presenter\Text;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -98,6 +98,11 @@ abstract class AbstractFilter
      * @var Collection<int|string, mixed>
      */
     public $group;
+
+    /**
+     * @var bool
+     */
+    protected $ignore = false;
 
     /**
      * AbstractFilter constructor.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Auth\Database;
+namespace OpenAdminCore\Admin\Auth\Database;
 
 use Illuminate\Database\Seeder;
 

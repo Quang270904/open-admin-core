@@ -1,14 +1,7 @@
 <?php
 
-namespace Encore\Admin;
+namespace OpenAdminCore\Admin;
 
-use Doctrine\DBAL\Schema\View;
-use Encore\Admin\Exception\Handler;
-use Encore\Admin\Show\Divider;
-use Encore\Admin\Show\Field;
-use Encore\Admin\Show\Panel;
-use Encore\Admin\Show\Relation;
-use Encore\Admin\Traits\Resource;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,10 +15,17 @@ use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use OpenAdminCore\Admin\Show\Divider;
+use OpenAdminCore\Admin\Show\Field;
+use OpenAdminCore\Admin\Show\Panel;
+use OpenAdminCore\Admin\Show\Relation;
+use OpenAdminCore\Admin\Traits\Resource;
+use OpenAdminCore\Admin\Traits\ShouldSnakeAttributes;
 
 class Show implements Renderable
 {
     use Resource;
+    use ShouldSnakeAttributes;
 
     /**
      * The Eloquent model to show.
@@ -362,7 +362,7 @@ class Show implements Renderable
     public function setWidth($fieldWidth = 8, $labelWidth = 2)
     {
         collect($this->fields)->each(function ($field) use ($fieldWidth, $labelWidth) {
-            $field->each->setWidth($fieldWidth, $labelWidth);
+            $field->setWidth($fieldWidth, $labelWidth);
         });
 
         return $this;
@@ -468,7 +468,9 @@ class Show implements Renderable
                 return $this->addRelation($method, $arguments[1], $arguments[0]);
             }
 
-            return $this->addField($method, Arr::get($arguments, 0))->setRelation(Str::snake($method));
+            return $this->addField($method, Arr::get($arguments, 0))->setRelation(
+                $this->shouldSnakeAttributes() ? Str::snake($method) : $method
+            );
         }
 
         if ($relation    instanceof HasMany

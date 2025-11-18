@@ -11,6 +11,7 @@
     border-bottom-left-radius: 3px;
 }
 
+
 .col-lg-1,
 .col-lg-10,
 .col-lg-11,
@@ -78,7 +79,7 @@
     background-color: #fff;
     color: #555;
     border: 1px solid #ddd;
-    border-top: 3px solid #0d6efd;
+    border-top: 3px solid #3c8dbc;
     border-bottom-color: transparent;
     border-left-color: #f4f4f4;
     border-right-color: #f4f4f4;
@@ -90,7 +91,7 @@
     background-color: #fff;
     color: #555;
     border: 1px solid #ddd;
-    border-top: 3px solid #0d6efd;
+    border-top: 3px solid #3c8dbc;
     border-bottom-color: transparent;
 }
 
@@ -145,7 +146,7 @@ ul.jstree-container-ul.jstree-children {
 }
 
 .fixed-contents-color {
-    background-color: #0d6efd;
+    background-color: #3c8dbc;
 }
 
 .form-select {
@@ -403,12 +404,12 @@ html {
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: #0d6efd;
+    background-color: #3c8dbc;
     color: white
 }
 
 span.bootstrap-switch-handle-on.bootstrap-switch-primary {
-    background-color: #0d6efd !important;
+    background-color: #3c8dbc !important;
 }
 
 .card.custom-border-success {
@@ -479,7 +480,7 @@ select[id^="bootstrap-duallistbox-"] {
     border-color: #ddd;
 }
 select[id^="bootstrap-duallistbox-"]:hover {
-    border-color: #0d6efd;
+    border-color: #3c8dbc;
     box-shadow: none;
 }
 
@@ -501,8 +502,8 @@ select[id^="bootstrap-duallistbox-"]:focus-visible{
     border-top: 3px solid #d2d6de;
 }
 
-.box.box-success {
-    border-top-color: #00a65a;
+.box.box-success, .card.box-success {
+    border-top: 3px solid #00a65a !important;
 }
 
 .content-header>h1>small {
@@ -799,8 +800,8 @@ a.fa.fa-fw.fa-sort:focus {
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #0d6efd;
-    border: 1px solid #0d6efd;
+    background-color: #3c8dbc;
+    border: 1px solid #3c8dbc;
     color: #fff;
 }
 
@@ -891,7 +892,7 @@ hr {
     margin-bottom: 0 !important;
 }
 
-.box.box-info:where([class="box box-info"]) {
+.box.box-info {
     border-top: 3px solid #00c0ef !important;  
   }
 .modal-lg, .modal-xl{
@@ -912,6 +913,19 @@ hr {
 .text-white a{
     color: white !important;
     text-decoration: underline !important;
+}
+
+.treeview .has-subs::after {
+    content: '\f054';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    float: right;
+    transition: transform 0.3s;
+    top: 19px !important;
+}
+
+.treeview .has-subs.active::after {
+    transform: rotate(135deg);
 }
 
 @media (min-width: 768px) {
@@ -954,4 +968,12 @@ hr {
     .field-header {
         margin-left: 0;
     }
+}
+
+
+.form-group > label.asterisk::before {
+    display: none !important;
+}
+.card.box-info{
+    border-top: 3px solid #00c0ef !important;
 }

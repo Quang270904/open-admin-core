@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Layout;
+namespace OpenAdminCore\Admin\Layout;
 
 interface Buildable
 {

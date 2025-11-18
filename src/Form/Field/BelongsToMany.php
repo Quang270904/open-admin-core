@@ -12,7 +12,14 @@ class BelongsToMany extends MultipleSelect
     protected $relation_type = 'many';
     protected $multiple = true;
 
-    protected function getOptions()
+    /**
+     * Get options.
+     * *Not set $this->options*
+     * @param mixed|null $value
+     *
+     * @return array<mixed>
+     */
+    public function getOptions($value = null) : array
     {
         $options = [];
 

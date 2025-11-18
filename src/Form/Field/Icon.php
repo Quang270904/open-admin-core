@@ -1,6 +1,6 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
 class Icon extends Text
 {
@@ -21,6 +21,7 @@ class Icon extends Text
      */
     protected static $js = [
         '/vendor/open-admin/fontawesome-iconpicker/dist/js/fontawesome-iconpicker-customize.js',
+        '/vendor/open-admin/fields/icon-picker/icon-picker.js',
     ];
 
     /**

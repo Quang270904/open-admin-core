@@ -82,7 +82,7 @@ $(function () {
     menu.parents('ul.treeview-menu').addClass('menu-open');
     menu.parents('li.treeview').addClass('active');
 
-    $('[data-toggle="popover"]').popover();
+    $('[data-bs-toggle="popover"]').popover();
 
     // Sidebar form autocomplete
     $('.sidebar-form .autocomplete').on('keyup focus', function () {

@@ -1,11 +1,12 @@
 <?php
 
-namespace Encore\Admin\Widgets;
+namespace OpenAdminCore\Admin\Widgets;
 
 use Closure;
-use Encore\Admin\Form as BaseForm;
-use Encore\Admin\Form\Field;
-use Encore\Admin\Traits\FormTrait;
+use OpenAdminCore\Admin\Form as BaseForm;
+use OpenAdminCore\Admin\Form\Field;
+use OpenAdminCore\Admin\Traits\FormTrait;
+use OpenAdminCore\Admin\Form\Concerns\HasFormAttributes;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ use Illuminate\Validation\Validator;
  */
 class Form implements Renderable
 {
-    use FormTrait;
+    use HasFormAttributes;
 
     /**
      * The title of form.

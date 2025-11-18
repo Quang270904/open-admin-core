@@ -11,7 +11,7 @@ trait HasHooks
     /**
      * Supported hooks: submitted, editing, saving, saved, deleting, deleted.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $hooks = [];
 
@@ -65,9 +65,9 @@ trait HasHooks
      * Call hooks by giving name.
      *
      * @param string $name
-     * @param array  $parameters
+     * @param array<mixed> $parameters
      *
-     * @return Response
+     * @return Response|void
      */
     protected function callHooks($name, $parameters = [])
     {
@@ -120,6 +120,18 @@ trait HasHooks
     public function saving(Closure $callback)
     {
         return $this->registerHook('saving', $callback);
+    }
+
+    /**
+     * Set saved callback in Transaction.
+     *
+     * @param Closure $callback
+     *
+     * @return $this
+     */
+    public function savedInTransaction(Closure $callback)
+    {
+        return $this->registerHook('savedInTransaction', $callback);
     }
 
     /**
@@ -192,6 +204,16 @@ trait HasHooks
     protected function callSaved()
     {
         return $this->callHooks('saved');
+    }
+
+    /**
+     * Callback after saving a Model in transaction.
+     *
+     * @return mixed|null
+     */
+    protected function callSavedInTransaction()
+    {
+        return $this->callHooks('savedInTransaction');
     }
 
     /**

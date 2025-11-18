@@ -1,8 +1,10 @@
 <?php
 
-namespace Encore\Admin\Form\Field;
+namespace OpenAdminCore\Admin\Form\Field;
 
-use Encore\Admin\Form\NestedForm;
+use Illuminate\Support\Arr;
+use OpenAdminCore\Admin\Form\NestedForm;
+use OpenAdminCore\Admin\Widgets\Form as WidgetForm;
 
 class Table extends HasMany
 {
@@ -10,6 +12,8 @@ class Table extends HasMany
      * @var string
      */
     protected $viewMode = 'table';
+
+    public $save_null_values = true;
 
     /**
      * Table constructor.
@@ -32,6 +36,20 @@ class Table extends HasMany
     }
 
     /**
+     * Save null values or not.
+     *
+     * @param bool $set
+     *
+     * @return $this
+     */
+    public function saveNullValues($set = true)
+    {
+        $this->save_null_values = $set;
+
+        return $this;
+    }
+
+    /**
      * @return array<mixed>
      */
     protected function buildRelatedForms()
@@ -48,14 +66,18 @@ class Table extends HasMany
                     continue;
                 }
                 /** @phpstan-ignore-next-line fill method require 2 parameters. */
+                $data = empty($data) ? [] : $data;
+
                 $forms[$key] = $this->buildNestedForm($this->column, $this->builder, $key)->fill($data);
             }
         } else {
-            foreach ($this->value as $key => $data) {
+            foreach ($this->value ?? [] as $key => $data) {
                 if (isset($data['pivot'])) {
                     $data = array_merge($data, $data['pivot']);
                 }
                 /** @phpstan-ignore-next-line fill method require 2 parameters. */
+                $data = empty($data) ? [] : $data;
+
                 $forms[$key] = $this->buildNestedForm($this->column, $this->builder, $key)->fill($data);
             }
         }
@@ -74,7 +96,7 @@ class Table extends HasMany
         $prepare = $form->prepare($input);
         /** @phpstan-ignore-next-line Unable to resolve the template type TKey in call to function collect  */
         return collect($prepare)->reject(function ($item) {
-            return $item[NestedForm::REMOVE_FLAG_NAME] == 1;
+            return Arr::get($item, NestedForm::REMOVE_FLAG_NAME) == 1;
         })->map(function ($item) {
             unset($item[NestedForm::REMOVE_FLAG_NAME]);
 
@@ -106,9 +128,15 @@ class Table extends HasMany
         $form = new NestedForm($column);
 
         $form->setIndex($index);
+        $form->saveNullValues($this->save_null_values);
 
-        $form->setForm($this->form)
-            ->setKey($key);
+        if ($this->form instanceof WidgetForm) {
+            $form->setWidgetForm($this->form);
+        } else {
+            $form->setForm($this->form);
+        }
+
+        $form->setKey($key);
 
         call_user_func($builder, $form);
 

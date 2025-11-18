@@ -1,13 +1,13 @@
 <?php
 
-namespace Encore\Admin\Grid\Exporters;
+namespace OpenAdminCore\Admin\Grid\Exporters;
 
-use Encore\Admin\Grid;
+use OpenAdminCore\Admin\Grid;
 
 abstract class AbstractExporter implements ExporterInterface
 {
     /**
-     * @var \Encore\Admin\Grid
+     * @var \OpenAdminCore\Admin\Grid
      */
     protected $grid;
 
@@ -49,7 +49,7 @@ abstract class AbstractExporter implements ExporterInterface
      */
     public function getTable()
     {
-        return $this->grid->model()->eloquent()->getTable();
+        return $this->grid->model()->getOriginalModel()->getTable();
     }
 
     /**
@@ -72,6 +72,8 @@ abstract class AbstractExporter implements ExporterInterface
      */
     public function chunk(callable $callback, $count = 100)
     {
+        $this->grid->applyQuery();
+
         return $this->grid->getFilter()->chunk($callback, $count);
     }
 
@@ -102,8 +104,8 @@ abstract class AbstractExporter implements ExporterInterface
                 ->select([$keyName])
                 ->setEagerLoads([])
                 ->forPage($this->page, $perPage)->get();
-
-            $queryBuilder->whereIn($keyName, $scope->pluck($keyName));
+            // If $querybuilder is a Model, it must be reassigned, unless it is a eloquent/query builder.
+            $queryBuilder = $queryBuilder->whereIn($keyName, $scope->pluck($keyName));
         }
 
         return $queryBuilder;

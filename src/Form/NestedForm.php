@@ -1,12 +1,13 @@
 <?php
 
-namespace Encore\Admin\Form;
+namespace OpenAdminCore\Admin\Form;
 
-use Encore\Admin\Admin;
-use Encore\Admin\Form;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use OpenAdminCore\Admin\Admin;
+use OpenAdminCore\Admin\Form;
+use OpenAdminCore\Admin\Widgets\Form as WidgetForm;
 
 /**
  * Class NestedForm.
@@ -23,7 +24,7 @@ use Illuminate\Support\Collection;
  * @method Field\Url            url($column, $label = '')
  * @method Field\Color          color($column, $label = '')
  * @method Field\Email          email($column, $label = '')
- * @method Field\Mobile         mobile($column, $label = '')
+ * @method Field\PhoneNumber    phonenumber($column, $label = '')
  * @method Field\Slider         slider($column, $label = '')
  * @method Field\Map            map($latitude, $longitude, $label = '')
  * @method Field\Editor         editor($column, $label = '')
@@ -53,11 +54,11 @@ use Illuminate\Support\Collection;
  */
 class NestedForm
 {
-    const DEFAULT_KEY_NAME = '__LA_KEY__';
+    public const DEFAULT_KEY_NAME = '__LA_KEY__';
 
-    const REMOVE_FLAG_NAME = '_remove_';
+    public const REMOVE_FLAG_NAME = '_remove_';
 
-    const REMOVE_FLAG_CLASS = 'fom-removed';
+    public const REMOVE_FLAG_CLASS = 'fom-removed';
 
     /**
      * @var mixed
@@ -96,9 +97,14 @@ class NestedForm
     protected $original = [];
 
     /**
-     * @var \Encore\Admin\Form
+     * @var \OpenAdminCore\Admin\Form|\OpenAdminCore\Admin\Widgets\Form
      */
     protected $form;
+
+    /**
+     * @var bool
+     */
+    protected $save_null_values = true;
 
     /**
      * Create a new NestedForm instance.
@@ -128,6 +134,20 @@ class NestedForm
     }
 
     /**
+     * Save null values or not.
+     *
+     * @param bool $set
+     *
+     * @return $this
+     */
+    public function saveNullValues($set = true)
+    {
+        $this->save_null_values = $set;
+
+        return $this;
+    }
+
+    /**
      * Get the value of the model's primary key.
      *
      * @return string|mixed|null
@@ -147,10 +167,10 @@ class NestedForm
         }
 
         if (isset($this->index)) {
-            return 'new_'.($this->index);
+            return 'new_' . ($this->index);
         }
 
-        return 'new_'.static::DEFAULT_KEY_NAME;
+        return 'new_' . static::DEFAULT_KEY_NAME;
     }
 
     /**
@@ -196,6 +216,20 @@ class NestedForm
      * @return $this
      */
     public function setForm($form = null)
+    {
+        $this->form = $form;
+
+        return $this;
+    }
+
+    /**
+     * Set Widget/Form.
+     *
+     * @param WidgetForm $form
+     *
+     * @return $this
+     */
+    public function setWidgetForm(WidgetForm $form = null)
     {
         $this->form = $form;
 
@@ -346,7 +380,7 @@ class NestedForm
             }
 
             $isSet = false;
-            if (($field instanceof \Encore\Admin\Form\Field\Hidden) || $value != $field->original()) {
+            if (($field instanceof \OpenAdminCore\Admin\Form\Field\Hidden) || $value != $field->original()) {
                 $isSet = true;
             }
             // 0($value) != null($field->original()) is false, so if value is 0, especially check.
@@ -426,7 +460,7 @@ class NestedForm
      * @param int $index
      * @return $this
      */
-    public function fill(array $data, $index)
+    public function fill(array $data = [], $index)
     {
         /* @var Field $field */
         foreach ($this->fields() as $field) {
