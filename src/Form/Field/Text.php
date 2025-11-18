@@ -2,7 +2,6 @@
 
 namespace OpenAdminCore\Admin\Form\Field;
 
-
 use OpenAdminCore\Admin\Form\Field;
 use OpenAdminCore\Admin\Form\Field\Traits\HasValuePicker;
 use OpenAdminCore\Admin\Form\Field\Traits\PlainInput;
