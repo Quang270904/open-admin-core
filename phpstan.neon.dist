@@ -2,6 +2,8 @@ parameters:
     paths:
         - src
     level: 6
+    bootstrapFiles:
+        - vendor/autoload.php
     ignoreErrors:
         - '#Call to static method user\(\) on an unknown class Exment.#'
         - '#Call to static method transaction\(\) on an unknown class ExmentDB.#'
@@ -15,6 +17,3 @@ parameters:
         - '#Instanceof between Illuminate\\Database\\Eloquent\\Relations\\Relation and Illuminate\\Database\\Eloquent\\Relations\\MorphToMany will always evaluate to false.#'
         - '#Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types#'
         - '#Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types#'
-
-includes:
-    - ./vendor/larastan/larastan/extension.neon
