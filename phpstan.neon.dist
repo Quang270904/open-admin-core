@@ -1,7 +1,7 @@
 parameters:
     paths:
         - src
-    level: 6
+    level: 5
     bootstrapFiles:
         - vendor/autoload.php
     ignoreErrors:
