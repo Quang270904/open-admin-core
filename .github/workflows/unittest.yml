@@ -38,11 +38,14 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: mbstring, xml, ctype, json, mysql, dom, pcre, gd
+          coverage: none
+          ini-values: memory_limit=512M
 
       - name: Composer install
-        run: composer install
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Composer run test
-        run: composer run test
+      - name: Run PHPUnit tests
+        run: php -d memory_limit=512M ./vendor/bin/phpunit --debug --verbose
         env:
           MYSQL_HOST: 127.0.0.1
