@@ -38,14 +38,15 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, xml, ctype, json, mysql, dom, pcre, gd
+          extensions: mbstring, xml, ctype, json, mysql, dom, pcre, gd, curl, fileinfo
           coverage: none
-          ini-values: memory_limit=512M
+          ini-values: memory_limit=1G, max_execution_time=300
 
       - name: Composer install
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run PHPUnit tests
-        run: php -d memory_limit=512M ./vendor/bin/phpunit --display-warnings --display-notices
+        run: php -d memory_limit=1G -d max_execution_time=300 ./vendor/bin/phpunit --stop-on-failure --no-coverage
         env:
           MYSQL_HOST: 127.0.0.1
+        timeout-minutes: 10
