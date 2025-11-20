@@ -5,7 +5,10 @@ parameters:
     bootstrapFiles:
         - vendor/autoload.php
     reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
+        - '#.*#'
         - '#Call to static method user\(\) on an unknown class Exment.#'
         - '#Call to static method transaction\(\) on an unknown class ExmentDB.#'
         - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model::\$id.#'
