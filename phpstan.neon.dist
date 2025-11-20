@@ -5,8 +5,10 @@ parameters:
     bootstrapFiles:
         - vendor/autoload.php
     reportUnmatchedIgnoredErrors: false
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+    excludePaths:
+        - src/Grid/Exporters/ExcelExporter.php
+        - src/SortableModel.php
+        - src/Widgets/Grid/Exporters/ExcelExporter.php
     ignoreErrors:
         - '#.*#'
         - '#Call to static method user\(\) on an unknown class Exment.#'
