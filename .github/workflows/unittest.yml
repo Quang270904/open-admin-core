@@ -46,6 +46,6 @@ jobs:
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run PHPUnit tests
-        run: php -d memory_limit=512M ./vendor/bin/phpunit --debug --verbose
+        run: php -d memory_limit=512M ./vendor/bin/phpunit --display-warnings --display-notices
         env:
           MYSQL_HOST: 127.0.0.1
