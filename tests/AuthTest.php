@@ -56,23 +56,10 @@ class GraphHelper {
     public static function initializeGraphForAuthorze($email = 'admin@asai-archi.com'): void {
         GraphHelper::$userEvents = new Models\EventCollectionResponse();
 
-        // $clientId = env('GRAPH_CLIENT_ID');
-        // $tenantId = env('GRAPH_TENANT_ID');
-        // $clientSecret = env('GRAPH_CLIENT_SECRET');
+        $clientId = env('GRAPH_CLIENT_ID');
+        $tenantId = env('GRAPH_TENANT_ID');
+        $clientSecret = env('GRAPH_CLIENT_SECRET');
 
-        [$local, $domain] = explode('@', $email, 2);
-        // 意図的に「ログイン設定」の[ログイン設定表示名]の値に、ドメインを指定しています。
-        $login_setteing = LoginSetting::getOAuthSettings(false)->first(function ($record) use ($domain) {
-            return $record->login_view_name == $domain;
-        });
-        if ( is_nullorempty($login_setteing) ){
-            throw '<Kajitori> Not Found Login Setting !!';
-        }
-
-        $tenantId = ( $domain === 'asai-archi.com' ) ? env('GRAPH_TENANT_ID_AAR') : env('GRAPH_TENANT_ID_MPD');
-
-        $clientId = $login_setteing->getOption('oauth_client_id');
-        $clientSecret = $login_setteing->getOption('oauth_client_secret');
 
 
         $scopes = ['https://graph.microsoft.com/.default'];
@@ -409,6 +396,7 @@ class GraphHelper {
                                 array(
                                     'event_id' => $event->getId(),
                                     'isCancelled' => true,
+                                    'target_user_email' => $user->getValue('email'),
                                 ),
                             'status' => $statusArr
                         );
@@ -505,8 +493,8 @@ class GraphHelper {
                                 'is_group_user' => true
                             );
 
-                            \Log::debug('    開催者にも出席者にも '.$user->getValue('email').' が存在しない [開催者:'. $raw_organizer .' / タイトル:' .$event->getSubject(). ']');
-                            \Log::debug('    iCalUId : '.$event->getICalUId());
+                            \Log::debug('      開催者にも出席者にも '.$user->getValue('email').' が存在しない [開催者:'. $raw_organizer .' / タイトル:' .$event->getSubject(). ']');
+                            //\Log::debug('    iCalUId : '.$event->getICalUId());
                         }
                     }
 
@@ -906,12 +894,28 @@ class GraphHelper {
                     if ( $event['event']['isCancelled'] ) {
                         // Case Delete
                         
-                        // 主催者なら
-                        if ( !array_key_exists('isOrganizer', $event['event'] )){
-                            \Log::debug('    ERROR: 主催者情報なし');
-                        } elseif ( $event['event']['isOrganizer'] ){
+                        // 対象ユーザーのメールアドレスが開催者メールアドレスと同じ場合
+                        if ( $record->getValue('raw_organizer') == $event['event']['target_user_email'] ) {
                             try {
+                                \Log::debug('      キャンセルされたイベントを削除します。');
                                 $record->delete();
+
+                                // 繰り返しイベントのマスターイベントの場合
+                                if ( !is_nullorempty( $record->getValue('recurrence') ) ) {
+                                    // サブイベントのレコードを削除
+                                    $sub_event_records = $exment_schedule->getValueModel()
+                                        ->where($outlook_searchCol_series_master_event_id->getIndexColumnName(), '=', $event_id)
+                                        ->get();
+
+                                    foreach ($sub_event_records as $r) {
+                                        \Log::debug('        マスターイベントが削除されたためサブイベントを削除 [subject : '.$r->getValue('subject').'/start : '.$r->getValue('start').']');
+                                        try {
+                                            $r->delete();
+                                        } catch (\Exception $e) {
+                                            \Log::debug('        ERROR: サブイベントを削除できませんでした。');
+                                        }
+                                    }
+                                }
                             } catch (\Exception $e) {
                                 \Log::debug('    ERROR: キャンセルされたイベントを削除できませんでした。');
                                 \Log::debug('      -> subject : ' . $event['event']['subject'] . ' / start : ' . $event['event']['start_date']);
@@ -966,11 +970,19 @@ class GraphHelper {
                                 If (isset($master_child_record)) {
                                     $master_record = $exment_schedule->getValueModel( $master_child_record->parent_id );
                                 } else {
-                                    // 繰り返しイベント(マスタ)が存在しない＝繰り返しイベントがキャンセルされた
-                                    //$master_record = null;
-                                    $record->setValidationDestroy(true);
-                                    $record->delete();
-                                    continue;
+                                    // 繰り返しイベント(マスタ)がヒットしない
+                                    // = 繰り返しイベントがキャンセルされた or 対象ユーザーのattendance_statusが削除された (対象ユーザーが予定から削除された)
+
+                                    // 主催者がおり、かつ対象ユーザーが主催者でない場合はスキップ
+                                    if ( !is_nullorempty($record->getValue('organizer')) && $record->getValue('raw_organizer') != $event['event']['target_user_email'] ){
+                                        \Log::debug('      繰り返しイベントのマスターイベントがヒットしないが、主催者でないため、処理をスキップします。');
+                                        continue;
+                                    } else {
+                                        \Log::debug('      繰り返しイベントのマスターイベントがヒットしないため、サブイベントを削除します。');
+                                        $record->setValidationDestroy(true);
+                                        //$record->delete();
+                                        continue;
+                                    }
                                 }
                             }
 
@@ -1089,7 +1101,8 @@ class GraphHelper {
                         $record->setValue($event['event'])->save();
 
                         if ( isset($event['status']) && count($event['status']) > 0 ) {
-                            $attendance_status_custom_values = $record->getChildrenValues(CustomTable::getEloquent('attendance_status')->id);
+                            // ★★★refreshをしないとattendance_statusのデータが最新にならない場合がある
+                            $attendance_status_custom_values = $record->refresh()->getChildrenValues(CustomTable::getEloquent('attendance_status')->id);
                             GraphHelper::patchAttendanceStatus($attendance_status_custom_values, $event['status'], $record->id, $deleteAttendanceStatus);    
                         }
                     }
@@ -1663,7 +1676,7 @@ class GraphHelper {
             }
         }
         
-        if ( ! $deleteAttendanceStatus ) return;
+        //if ( ! $deleteAttendanceStatus ) return;
 
         // Delete attendees that were removed from the event
         if (isset($attendance_status_custom_values[0])) {
