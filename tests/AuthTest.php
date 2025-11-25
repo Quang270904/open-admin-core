@@ -16,7 +16,7 @@ class AuthTest extends TestCase
     }
     
     public function testLogin()
-    {
+    { 
         $credentials = ['username' => 'admin', 'password' => 'admin'];
 
         $this->visit('admin/auth/login')
