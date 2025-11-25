@@ -1,7 +1,7 @@
 <?php
 
 class AuthTest extends TestCase
-{
+{ 
     public function testLoginPage()
     {
         $this->visit('admin/auth/login')
