@@ -14,7 +14,7 @@ class AuthTest extends TestCase
             ->dontSeeIsAuthenticated('admin')
             ->seePageIs('admin/auth/login');
     }
-
+    
     public function testLogin()
     {
         $credentials = ['username' => 'admin', 'password' => 'admin'];
