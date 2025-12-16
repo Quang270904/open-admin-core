@@ -554,14 +554,12 @@ $(document).on('submit', 'form[pjax-container]', function (event) {
 
 
 $(document).on('pjax:end', function () {
-    // bindSubmitButtonWithLoading();
-    // changeText();
-    document.querySelectorAll('[data-bs-toggle="tooltip"].enable-tooltip').forEach(function (el) {
-        new bootstrap.Tooltip(el, {
-            title: el.getAttribute('data-bs-original-title') || el.getAttribute('title')
-        });
+    // Clean up all tooltips before reinitializing
+    document.querySelectorAll('.tooltip').forEach(el => el.remove());
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+        var instance = bootstrap.Tooltip.getInstance(el);
+        if (instance) instance.dispose();
     });
-
 });
 $(document).on('pjax:send', function (xhr) {
     if (xhr.relatedTarget && xhr.relatedTarget.tagName && xhr.relatedTarget.tagName.toLowerCase() === 'form') {
