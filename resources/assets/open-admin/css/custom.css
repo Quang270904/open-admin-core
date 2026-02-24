@@ -871,9 +871,9 @@ hr {
   border-top: 1px solid #c7c7c7 !important;
 }
 
-.btn-group>a.btn {
+/* .btn-group>a.btn {
   border-radius: 3px !important;
-}
+} */
 
 .input-group-btn>button.btn {
   border-radius: 0 3px 3px 0 !important;
