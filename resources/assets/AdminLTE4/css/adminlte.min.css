@@ -4308,6 +4308,12 @@ fieldset:disabled .btn {
     border-bottom-left-radius: 0
 }
 
+.btn-group>.btn-group:not(:first-child)>.btn:hover,
+.btn-group>.btn:nth-child(n+3):hover,
+.btn-group>:not(.btn-check)+.btn:hover {
+   border-radius: 0;
+}
+
 .dropdown-toggle-split {
     padding-right: .5625rem;
     padding-left: .5625rem

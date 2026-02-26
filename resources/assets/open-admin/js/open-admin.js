@@ -201,23 +201,24 @@ admin.ajax = {
 
     init: function () {
         // history back
-        window.onpopstate = function (event) {
-            preventPopState = true;
-            // Restore scroll position from browser history state when user clicks back/forward
-            let scrollY = event.state && event.state.scrollY ? event.state.scrollY : 0;
+        // window.onpopstate = function (event) {
+            
+        //     preventPopState = true;
+        //     // Restore scroll position from browser history state when user clicks back/forward
+        //     let scrollY = event.state && event.state.scrollY ? event.state.scrollY : 0;
 
-            $.pjax({
-                url: document.location.href,
-                container: '#pjax-container',
-                timeout: 2000,
-                scrollTo: false // Disable PJAX auto-scroll to prevent jumping to top
-            }).done(function () {
-                // Restore the saved scroll position after PJAX content is loaded
-                if (scrollY > 0) {
-                    setTimeout(() => window.scrollTo(0, scrollY), 50);
-                }
-            });
-        };
+        //     $.pjax({
+        //         url: document.location.href,
+        //         container: '#pjax-container',
+        //         timeout: 2000,
+        //         scrollTo: false // Disable PJAX auto-scroll to prevent jumping to top
+        //     }).done(function () {
+        //         // Restore the saved scroll position after PJAX content is loaded
+        //         if (scrollY > 0) {
+        //             setTimeout(() => window.scrollTo(0, scrollY), 50);
+        //         }
+        //     });
+        // };
 
         // link in content and menu
 
@@ -392,7 +393,7 @@ admin.ajax = {
 
 admin.pages = {
     init: function () {
-        clickEvent();
+        // clickEvent();
         bindSubmitButtonWithLoading();
         // handleSidebar();
         // changeText();
@@ -442,10 +443,18 @@ toastr.options = {
     timeOut: 4000
 };
 
+$.pjax.defaults.timeout = 5000;
 $.pjax.defaults.maxCacheLength = 0;
 $(document).on('pjax:timeout', function (event) {
     event.preventDefault();
 })
+$(document).pjax('a:not(a[target="_blank"]):not(a[data-nopjax])', {
+    container: '#pjax-container'
+});
+
+$(document).on('submit', 'form[pjax-container]', function (event) {
+    $.pjax.submit(event, '#pjax-container')
+});
 
 $(function () {
     $('.sidebar-menu li:not(.treeview) > a').on('click', function () {
@@ -536,22 +545,6 @@ $(function () {
     };
 
 })(jQuery);
-
-$(document).on('submit', 'form[pjax-container]', function (event) {
-  const container = '#pjax-container';
-
-  $.pjax.submit(event, container);
-
-  $(container).one('pjax:success', function () {
-    $(this).find('select').each(function () {
-      if ($(this).data('select2')) {
-        $(this).select2('destroy');
-      }
-      $(this).select2({ width: '100%' });
-    });
-  });
-});
-
 
 $(document).on('pjax:end', function () {
     // Clean up all tooltips before reinitializing

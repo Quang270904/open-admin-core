@@ -98,7 +98,9 @@ EOT;
 
         $settings = array_merge([
             'availableTitle' => trans('admin.listbox.title_available'),
-            'selectedTitle' => trans('admin.listbox.title_selected'),
+            'selectedTitle'  => trans('admin.listbox.title_selected'),
+            'infoText'       => trans('admin.listbox.text_total'),
+            'infoTextEmpty'  => trans('admin.listbox.text_empty'),
             'minHeight' => 200,
             // Sometimes, click not working, so double click is false
             'moveOnDoubleClick' => false,

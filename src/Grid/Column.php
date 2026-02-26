@@ -171,7 +171,7 @@ class Column
         $this->name = $name;
         $this->label = $this->formatLabel($label);
 
-        $this->initAttributes();
+        // $this->initAttributes();
     }
 
     /**

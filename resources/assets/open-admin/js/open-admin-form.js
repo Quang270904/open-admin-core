@@ -8,7 +8,7 @@ admin.form = {
     beforeSaveCallbacks: [],
 
     init: function () {
-        this.addAjaxSubmit();
+        // this.addAjaxSubmit();
         this.footer();
         this.tabs();
         this.initValidation();
