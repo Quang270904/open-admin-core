@@ -126,7 +126,7 @@ button.btn.btn-box-tool {
   padding: 5px;
   font-size: 12px !important;
   background: transparent;
-  color: #97a0b3;
+  /* color: #97a0b3; */
   box-shadow: none;
 }
 
