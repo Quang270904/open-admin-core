@@ -30,8 +30,8 @@
 
         @include('admin::partials.sidebar')
 
-        <div class="content-wrapper" id="main">
-            <div id="pjax-container">
+        <div class="content-wrapper" id="pjax-container">
+            {{-- <div id="pjax-container"> --}}
                 <!--start-pjax-container-->
                 {!! Admin::style() !!}
                 <div id="app">
@@ -40,7 +40,7 @@
                 {{-- {!! Admin::html() !!} --}}
                 {!! Admin::script() !!}
                 <!--end-pjax-container-->
-            </div>
+            {{-- </div> --}}
 
         </div>
         @include('admin::partials.footer')
