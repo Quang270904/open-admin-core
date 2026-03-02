@@ -12362,6 +12362,7 @@ body label {
 .wrapper {
   min-height: 99vh;
   position: relative;
+  overflow-y: auto !important;
 }
 
 /*-----------------------------------------------------*/
