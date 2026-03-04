@@ -3653,6 +3653,13 @@ fieldset:disabled .btn {
     --bs-btn-disabled-border-color: #f8f9fa
 }
 
+
+.btn-purple {
+  --bs-btn-color: #FFFFFF;
+  --bs-btn-active-bg: #82689c;
+  --bs-btn-border-color: #7564c7;
+}
+
 .btn-dark {
     --bs-btn-color: #fff;
     --bs-btn-bg: #212529;
