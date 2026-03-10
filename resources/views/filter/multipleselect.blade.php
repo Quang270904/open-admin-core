@@ -1,4 +1,4 @@
-<select class="form-control {{ $class }}" name="{{$name}}[]" multiple style="width: 100%;">
+<select class="form-control {{ $class }}" name="{{$name}}[]" multiple style="width: 100%; display: none;">
     <option></option>
     @foreach($options as $select => $option)
         @if(is_array(request($name, [])))

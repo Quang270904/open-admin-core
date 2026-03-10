@@ -393,10 +393,7 @@ admin.ajax = {
 
 admin.pages = {
     init: function () {
-        // clickEvent();
         bindSubmitButtonWithLoading();
-        // handleSidebar();
-        // changeText();
         this.setTitle();
         admin.menu.setActivePage(window.location.href);
         admin.grid.init();
